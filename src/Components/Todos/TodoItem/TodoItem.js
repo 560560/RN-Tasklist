@@ -1,11 +1,11 @@
 import React from "react"
-import {StyleSheet, Text, View, ScrollView} from 'react-native'
+import {StyleSheet, Text, View,} from 'react-native'
 
 export const TodoItem = ({todo}) => {
     return (
-        <ScrollView style={styles.wrapper}>
+        <View style={styles.wrapper}>
             <Text style={styles.todoItem}>{todo}</Text>
-        </ScrollView>
+        </View>
     )
 }
 const styles = StyleSheet.create({

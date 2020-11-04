@@ -1,10 +1,10 @@
 import React from "react"
 import {StyleSheet, Text, View} from 'react-native'
 
-export const Navbar = ({title}) => {
+export const Navbar = ({appName}) => {
     return (
         <View style={styles.navigationBar}>
-            <Text style={styles.title}>{title.toUpperCase()} App</Text>
+            <Text style={styles.title}>{appName.toUpperCase()}</Text>
         </View>
     )
 
