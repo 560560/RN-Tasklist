@@ -1,20 +1,12 @@
 import {StatusBar} from 'expo-status-bar';
 import React, {useState} from 'react';
 import {StyleSheet, Text, View, FlatList} from 'react-native';
-import {TodoInput} from "./Components/TodoInput/TodoInput";
-import {TodoItem} from "./Components/Todos/TodoItem/TodoItem";
 import NavbarContainer from "./Components/Navbar/NavbarContainer";
 import TodosContainer from "./Components/Todos/TodosContainer";
+import TodosInputContainer from "./Components/TodoInput/TodosInputCintainer";
 
 
 const Main = () => {
-
-
-    const [todos, setTodos] = useState([])
-
-    const addTodo = (title) => {
-        setTodos((prevTodos) => [...prevTodos, {id: Date.now().toString(), title}])
-    }
 
 
     return (
@@ -22,9 +14,8 @@ const Main = () => {
             <StatusBar style="light"/>
             <NavbarContainer/>
             <View style={styles.container}>
-                <TodoInput onSubmit={addTodo}/>
+                <TodosInputContainer/>
                 <TodosContainer/>
-
             </View>
 
         </View>

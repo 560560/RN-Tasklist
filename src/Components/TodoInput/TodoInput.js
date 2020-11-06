@@ -1,12 +1,13 @@
 import React, {useState} from "react"
 import {StyleSheet, Text, View, TextInput, Button, Alert} from 'react-native'
+import {addTodo} from "../../redux/todos-reducer";
 
 
-export const TodoInput = ({onSubmit}) => {
+export const TodoInput = ({onSubmit, addTodo}) => {
     const [value, setValue] = useState("")
     const onPressHandler = () => {
         if (value.trim()) {
-            onSubmit(value)
+            addTodo(value)
             setValue("")
         } else {
             Alert.alert("Название дела не может быть пустым")
