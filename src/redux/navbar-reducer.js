@@ -31,12 +31,13 @@ const setAppName = (appName) => {
 
 
 export const getAppName = () => async (dispatch) => {
+
     try {
         let response = await axios.get("http://agro-api.site:4000/appName")
         dispatch(setAppName(response.data.appName))
 
     } catch (e) {
-        dispatch(setAppName("Agro Application"))
+        dispatch(setAppName("Список задач"))
     }
 
 

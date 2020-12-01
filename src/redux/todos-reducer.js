@@ -5,10 +5,14 @@ import {Alert} from "react-native-web";
 const SET_IS_LOADING = "SET_IS_LOADING"
 const SET_TODO = "SET_TODO"
 const SET_TODOS = "SET_TODOS"
+const DELETE_TODO = "DELETE_TODO"
+const SET_DONE_TODO = "SET_DONE_TODO"
+const SET_REFRESHING = "SET_REFRESHING"
 
 const initialState = {
     todos: [],
     isLoading: false,
+    isRefreshing: false
 
 }
 
@@ -27,12 +31,33 @@ const todosReducer = (state = initialState, action) => {
         case SET_TODO:
             return {
                 ...state,
-                todos: [...state.todos.concat(action.todo)]
+                todos: [action.todo, ...state.todos]
             }
         case SET_TODOS:
             return {
                 ...state,
                 todos: action.todos
+            }
+        case DELETE_TODO:
+            return {
+                ...state,
+                todos: [...state.todos].filter(todo => todo.id !== action.id)
+            }
+        case SET_DONE_TODO:
+            return {
+                ...state,
+                todos: [...state.todos].map(todo => {
+                    if (todo.id === action.todo.id) {
+                        return action.todo
+                    } else {
+                        return todo
+                    }
+                })
+            }
+        case SET_REFRESHING:
+            return {
+                ...state,
+                isRefreshing: action.status
             }
         default:
             return state
@@ -60,6 +85,28 @@ const setTodo = (todo) => {
     }
 }
 
+const setDoneTodo = (todo) => {
+
+    return {
+        type: SET_DONE_TODO,
+        todo
+    }
+}
+
+const deleteTodo = (id) => {
+    return {
+        type: DELETE_TODO,
+        id
+    }
+}
+
+export const  setRefreshing = (status) => {
+    return {
+        type: SET_REFRESHING,
+        status
+    }
+}
+
 export const getTodos = () => async (dispatch) => {
     dispatch(setIsLoading(true))
     try {
@@ -78,7 +125,7 @@ export const addTodo = (title) => async (dispatch) => {
     dispatch(setIsLoading(true))
     try {
         let response = await instance.post("todos", {title: title})
-        //Если статус 200 надо запушить в todos
+
         if (response.status === 200 && response.data.status === 201) {
             dispatch(setTodo(response.data.newTodo))
         }
@@ -88,5 +135,35 @@ export const addTodo = (title) => async (dispatch) => {
     dispatch(setIsLoading(false))
 }
 
+export const checkTodo = (id) => async (dispatch) => {
 
+    dispatch(setIsLoading(true))
+    try {
+        let response = await instance.post("todo", {id: id})
+
+        if (response.status === 200 && response.data.status === 201) {
+            dispatch(setDoneTodo(response.data.modifidedTodo[0]))
+
+        }
+    } catch (e) {
+        Alert("Что то пошло не так: " + e)
+    }
+    dispatch(setIsLoading(false))
+}
+
+export const removeTodo = (id) => async (dispatch) => {
+    dispatch(setIsLoading(true))
+    console.log(1)
+    let response = await instance.delete("todos", {data: {id: id}})
+    try {
+        if (response.status === 200 && response.data.status === "Success") {
+            dispatch(deleteTodo(id))
+            console.log(response.data.message)
+
+        }
+    } catch (e) {
+        Alert("Что то пошло не так: " + e)
+    }
+    dispatch(setIsLoading(false))
+}
 export default todosReducer

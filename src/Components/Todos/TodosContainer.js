@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {View} from "react-native";
-import {getTodos} from "../../redux/todos-reducer";
+
+import {checkTodo, getTodos, removeTodo, setRefreshing} from "../../redux/todos-reducer";
 import {connect} from "react-redux"
 import Todos from "./Todos";
 
@@ -12,20 +12,27 @@ class TodosContainer extends Component {
     }
 
     componentDidMount() {
-       this.props.getTodos()
+        this.props.getTodos()
+    }
+
+    onRefresh = () => {
+        this.props.setRefreshing(true)
+        this.props.getTodos()
+        setTimeout(() => {
+            this.props.setRefreshing(false)
+        }, 2000)
     }
 
     render() {
         return (
-            <View>
-                <Todos {...this.props}/>
-            </View>
+            <Todos {...this.props}  onRefresh={this.onRefresh}/>
         );
     }
 }
 
 const mapStateToProps = (state) => ({
-    todos: state.todos.todos
+    todos: state.todos.todos,
+    isRefreshing: state.todos.isRefreshing
 })
 
-export default connect(mapStateToProps, {getTodos})(TodosContainer);
+export default connect(mapStateToProps, {getTodos, removeTodo, checkTodo, setRefreshing})(TodosContainer);
