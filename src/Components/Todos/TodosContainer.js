@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import {checkTodo, getTodos, removeTodo, setRefreshing} from "../../redux/todos-reducer";
+import {checkTodo, editTodo, getTodos, removeTodo, setEditMode, setRefreshing} from "../../redux/todos-reducer";
 import {connect} from "react-redux"
 import Todos from "./Todos";
 
@@ -32,7 +32,8 @@ class TodosContainer extends Component {
 
 const mapStateToProps = (state) => ({
     todos: state.todos.todos,
-    isRefreshing: state.todos.isRefreshing
+    isRefreshing: state.todos.isRefreshing,
+    todoUnderEdit: state.todos.todoUnderEdit
 })
 
-export default connect(mapStateToProps, {getTodos, removeTodo, checkTodo, setRefreshing})(TodosContainer);
+export default connect(mapStateToProps, {getTodos, removeTodo, checkTodo, setRefreshing, setEditMode, editTodo})(TodosContainer);

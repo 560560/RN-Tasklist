@@ -1,6 +1,6 @@
 import React, {useState} from "react"
 import {StyleSheet, Text, View, TextInput, Button, Alert} from 'react-native'
-import {addTodo} from "../../redux/todos-reducer";
+
 
 
 export const TodoInput = ({onSubmit, addTodo}) => {
@@ -22,7 +22,7 @@ export const TodoInput = ({onSubmit, addTodo}) => {
                 autoCorrect={true}
                 style={styles.inputField}
                 value={value}
-                placeholder="Введите название дела..."
+                placeholder="Введите название задачи..."
                 onChangeText={setValue}
                 
             />
