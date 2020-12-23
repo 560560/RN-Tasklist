@@ -6,6 +6,7 @@ import Todos from "./Todos";
 import {getSelectedTodos} from "../../redux/todosSelectors";
 
 
+
 class TodosContainer extends Component {
     constructor(props) {
         super(props);
@@ -26,7 +27,7 @@ class TodosContainer extends Component {
 
     render() {
         return (
-            <Todos {...this.props}  onRefresh={this.onRefresh}/>
+            <Todos {...this.props}  onRefresh={this.onRefresh} />
         );
     }
 }

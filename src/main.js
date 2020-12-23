@@ -1,27 +1,35 @@
 import {StatusBar} from 'expo-status-bar';
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {ImageBackground, StyleSheet, View} from 'react-native';
 import NavbarContainer from "./Components/Navbar/NavbarContainer";
-import TodosContainer from "./Components/Todos/TodosContainer";
-import TodosInputContainer from "./Components/TodoInput/TodosInputCintainer";
-import {Footer} from "./Components/Footer/Footer";
+
+import bckgTodos from "../assets/bckgTodos.jpg";
+import FooterContainer from "./Components/Footer/FooterContainer";
+import {connect} from "react-redux";
+import {setScreenToShow} from "./redux/screens-reducer";
+import TodosScreen from "./Screens/TodosScreen";
+import ProfileScreen from "./Screens/ProfileScreen";
 
 
-
-const Main = () => {
+const Main = ({screenToShow}) => {
 
     return (
 
-            <View style={StyleSheet.flatten([styles.wrapper])}>
-                <StatusBar style="light"/>
-                <NavbarContainer/>
-                <View style={styles.container}>
-                    <TodosInputContainer/>
-                    <TodosContainer/>
-                </View>
-                <Footer/>
+        <View style={StyleSheet.flatten([styles.wrapper])}>
 
-            </View>
+            <StatusBar style="light"/>
+            <NavbarContainer/>
+            {
+                screenToShow === "todos"
+                ? <TodosScreen/>
+                : screenToShow === "profile" && <ProfileScreen/>
+            }
+
+
+
+            <FooterContainer/>
+
+        </View>
 
     );
 }
@@ -33,11 +41,16 @@ const styles = StyleSheet.create({
         position: "relative",
         backgroundColor: "#f8f8f8",
     },
-    container: {
+    image: {
         flex: 1,
-        padding: 15,
-    },
+        resizeMode: "repeat",
+        justifyContent: "center"
+    }
 
 })
 
-export default Main
+const mapStateToProps = (state) => ({
+    screenToShow: state.screens.screenToShow
+})
+
+export default connect(mapStateToProps, {})(Main)

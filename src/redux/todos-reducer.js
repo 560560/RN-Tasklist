@@ -9,6 +9,7 @@ const DELETE_TODO = "DELETE_TODO"
 const EDIT_TODO = "EDIT_TODO"
 const SET_REFRESHING = "SET_REFRESHING"
 const SET_EDIT_MODE = "SET_EDIT_MODE"
+const SET_SHOW_DONE_TASKS = "SET_SHOW_DONE_TASKS"
 
 
 const initialState = {
@@ -16,7 +17,8 @@ const initialState = {
     isLoading: false,
     isRefreshing: false,
     todoUnderEdit: null,
-    showDoneTasks: true
+    showDoneTasks: true,
+
 
 
 }
@@ -77,6 +79,11 @@ const todosReducer = (state = initialState, action) => {
                 ...state,
                 isRefreshing: action.status
             }
+        case SET_SHOW_DONE_TASKS:
+            return {
+                ...state,
+                showDoneTasks: action.newValue
+            }
         default:
             return state
     }
@@ -132,6 +139,12 @@ export const setRefreshing = (status) => {
     }
 }
 
+export const setShowDoneTasks = (newValue) => {
+    return {
+        type: SET_SHOW_DONE_TASKS,
+        newValue
+    }
+}
 
 //thunk-creator Получение списка заданий
 export const getTodos = () => async (dispatch) => {

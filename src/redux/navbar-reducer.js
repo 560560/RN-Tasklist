@@ -37,7 +37,7 @@ export const getAppName = () => async (dispatch) => {
         dispatch(setAppName(response.data.appName))
 
     } catch (e) {
-        dispatch(setAppName("Список задач"))
+        dispatch(setAppName("НЕТ СВЯЗИ С СЕРВЕРОМ"))
     }
 
 

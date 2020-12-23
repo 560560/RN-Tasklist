@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
         justifyContent: "flex-end",
 
 
+
     },
     title: {
         color: "#fff",
