@@ -3,26 +3,20 @@ import {StyleSheet, Text, View, TouchableWithoutFeedback, TouchableOpacity, Aler
 import {MaterialIcons} from '@expo/vector-icons'
 
 
-export const TodoItem = ({todo, id, editMode, isDone, removeTodo, checkTodo, setEditMode, editTodo, todoUnderEdit}) => {
 
-    const [value, setValue] = useState(todo)
-
-    const applyChanges = (id, title) => {
-        onEditHandler()
+export const TodoItem = ({todo, _id, editMode, isDone, removeTodo, checkTodo, setEditMode, editTodo, todoUnderEdit, todosQuantity, index, isLoading}) => {
 
 
-    }
+    const removeHandler = () => {
 
-    const cancelChanges = () =>
         Alert.alert(
-            "Отменить изменения?",
-            "Текст задачи останется прежний",
+            "Удаление задания?",
+            "Вы точно хотите удалить задание?",
             [
                 {
                     text: "Да",
                     onPress: () => {
-                        setValue(todo)
-                        setEditMode(id, false)
+                        removeTodo(_id)
                     }
                 },
 
@@ -34,10 +28,41 @@ export const TodoItem = ({todo, id, editMode, isDone, removeTodo, checkTodo, set
             {cancelable: false}
         )
 
+
+    }
+
+    const [value, setValue] = useState(todo)
+
+    const applyChanges = () => {
+        onEditHandler()
+    }
+
+    const cancelChanges = () => {
+        Alert.alert(
+            "Отменить изменения?",
+            "Текст задачи останется прежний",
+            [
+                {
+                    text: "Да",
+                    onPress: () => {
+                        setValue(todo)
+                        setEditMode(_id, false)
+                    }
+                },
+
+                {
+                    text: "Нет",
+                    style: "cancel"
+                }
+            ],
+            {cancelable: false}
+        )
+    }
+
     const onEditHandler = () => {
         if (value.trim()) {
-            editTodo(id, value)
-            setEditMode(id, false)
+            editTodo(_id, value)
+            setEditMode(_id, false)
         } else {
             Alert.alert("Название дела не может быть пустым")
         }
@@ -46,50 +71,60 @@ export const TodoItem = ({todo, id, editMode, isDone, removeTodo, checkTodo, set
 
 
     return (
-        <TouchableWithoutFeedback onPress={() => !editMode && checkTodo(id)} onLongPress={() => !todoUnderEdit && setEditMode(id, true)}>
-            {editMode
-                ? <View style={styles.wrapper}>
-                    <TouchableOpacity onPress={cancelChanges}>
-                        <MaterialIcons name="cancel" style={styles.cancelIcon}/>
-                    </TouchableOpacity>
 
-                    <TextInput
-                        autoCapitalize="sentences"
-                        autoCorrect={true}
-                        value={value}
-                        style={styles.inputField}
-                        placeholder="Введите название задачи..."
-                        onChangeText={setValue}
+            <View style={(index + 1) < todosQuantity ? {borderBottomWidth: 1, borderColor: "#c0ccf8"} : {}}>
+                <TouchableWithoutFeedback onPress={() => !editMode && !isLoading && checkTodo(_id, !isDone)}
+                                          onLongPress={() => !todoUnderEdit && setEditMode(_id, true)}>
+                    {editMode
+                        ? <View style={styles.wrapper}>
+                            <TouchableOpacity onPress={cancelChanges}>
+                                <MaterialIcons name="cancel" style={styles.cancelIcon}/>
+                            </TouchableOpacity>
 
-                    />
+                            <TextInput
+                                autoCapitalize="sentences"
+                                autoCorrect={true}
+                                value={value}
+                                style={styles.inputField}
+                                placeholder="Введите название задачи..."
+                                onChangeText={setValue}
+                                multiline={true}
 
-                    <TouchableOpacity onPress={() => applyChanges(id)}>
-                        <MaterialIcons name="done" style={styles.doneIcon}/>
-                    </TouchableOpacity>
-                </View>
 
-                : <View style={styles.wrapper}>
-                    <Text style={StyleSheet.flatten([styles.todoItem, (isDone ? {textDecorationLine: "line-through"} : {textDecorationLine: "none"})])}>{todo}</Text>
-                    <TouchableOpacity onPress={() => removeTodo(id)}>
-                        <MaterialIcons name="delete-sweep" style={styles.deleteIcon}/>
-                    </TouchableOpacity>
-                </View>
-            }
+                            />
 
-        </TouchableWithoutFeedback>
+                            <TouchableOpacity onPress={() => applyChanges(_id)}>
+                                <MaterialIcons name="done" style={styles.doneIcon}/>
+                            </TouchableOpacity>
+                        </View>
+
+                        : <View style={[styles.wrapper]}>
+                            <Text
+                                style={StyleSheet.flatten([styles.todoItem, (isDone ? {textDecorationLine: "line-through"} : {textDecorationLine: "none"})])}>{todo}</Text>
+                            <TouchableOpacity onPress={() => removeHandler(_id)}>
+                                <MaterialIcons name="delete-sweep" style={styles.deleteIcon}/>
+                            </TouchableOpacity>
+                        </View>
+                    }
+
+                </TouchableWithoutFeedback>
+
+
+            </View>
 
     )
 }
+
+
 const styles = StyleSheet.create({
     wrapper: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
         paddingVertical: 5,
-        backgroundColor: "rgb(189,226,246)",
         paddingLeft: 10,
         marginVertical: 7,
-        borderRadius: 10
+
 
     },
 
@@ -103,7 +138,7 @@ const styles = StyleSheet.create({
     },
     deleteIcon: {
         paddingRight: 10,
-        color: "#f66767",
+        color: "#f66767B3",
         fontSize: 30
     },
     doneIcon: {
@@ -116,9 +151,10 @@ const styles = StyleSheet.create({
         fontSize: 30
     },
     inputField: {
-        width: "60%",
+        width: "70%",
         borderBottomColor: "#1334a9",
         borderStyle: "solid",
-        borderBottomWidth: 2
+        borderBottomWidth: 1,
+        fontSize: 17
     }
 })

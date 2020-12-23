@@ -1,9 +1,9 @@
 import React, {useState} from "react"
-import {StyleSheet, Text, View, TextInput, Button, Alert} from 'react-native'
+import {StyleSheet, View, TextInput, Button, Alert} from 'react-native'
 
 
 
-export const TodoInput = ({onSubmit, addTodo}) => {
+export const TodoInput = ({addTodo}) => {
     const [value, setValue] = useState("")
     const onPressHandler = () => {
         if (value.trim()) {

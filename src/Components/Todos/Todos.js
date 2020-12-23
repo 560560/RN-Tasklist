@@ -1,25 +1,32 @@
-import React, {useState} from 'react';
-import {FlatList, View, StyleSheet, RefreshControl, Alert} from "react-native";
+import React from 'react';
+import {FlatList, View, StyleSheet, RefreshControl } from "react-native";
+
 import {TodoItem} from "./TodoItem/TodoItem";
-import {TouchableWithoutFeedback} from "react-native-web";
 
-const Todos = ({todos, isRefreshing, removeTodo, checkTodo, onRefresh, setEditMode, editTodo, todoUnderEdit}) => {
-
+const Todos = ({todos, isRefreshing, removeTodo, checkTodo, onRefresh, setEditMode, editTodo, todoUnderEdit, isLoading}) => {
+    let todosQuantity = todos.length
 
     return (
-        <View style={styles.todosWrapper}>
-            <FlatList
-                refreshControl={
-                    <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh}/>
-                }
-                data={todos}
-                renderItem={({item}) => (
-                    <TodoItem todo={item.title} id={item.id} isDone={item.isDone} editMode={item.editMode} removeTodo={removeTodo} checkTodo={checkTodo}
-                              setEditMode={setEditMode} editTodo={editTodo} todoUnderEdit={todoUnderEdit}
-                    />
-                )}
-                keyExtractor={item => item.id}/>
-        </View>
+            <View style={styles.todosWrapper}>
+
+                <FlatList
+                    removeClippedSubviews={false}
+                    refreshControl={
+                        <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh}/>
+                    }
+                    data={todos}
+                    renderItem={({item, index}) => (
+
+                        <TodoItem todo={item.title} _id={item._id} isDone={item.isDone} editMode={item.editMode} removeTodo={removeTodo} checkTodo={checkTodo}
+                                  setEditMode={setEditMode} editTodo={editTodo} todoUnderEdit={todoUnderEdit} todosQuantity={todosQuantity} index={index}
+                                  isLoading={isLoading}
+                        />
+
+
+                    )}
+                    keyExtractor={item => item._id}/>
+
+            </View>
 
     );
 }
@@ -27,7 +34,9 @@ const Todos = ({todos, isRefreshing, removeTodo, checkTodo, onRefresh, setEditMo
 
 let styles = StyleSheet.create({
         todosWrapper: {
-            flex: 1
+            flex: 1,
+            backgroundColor: "#f8f8f8",
+            paddingBottom: 35
 
         }
     }

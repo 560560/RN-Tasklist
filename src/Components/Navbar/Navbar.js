@@ -1,9 +1,11 @@
 import React from "react"
 import {StyleSheet, Text, View} from 'react-native'
 
+
 export const Navbar = ({appName}) => {
+
     return (
-        <View style={styles.navigationBar}>
+        <View style={[styles.navigationBar]}>
             <Text style={styles.title}>{appName.toUpperCase()}</Text>
         </View>
     )
@@ -12,10 +14,12 @@ export const Navbar = ({appName}) => {
 }
 const styles = StyleSheet.create({
     navigationBar: {
+
         backgroundColor: "#1334a9",
         height: 60,
         alignItems: "center",
-        justifyContent: "flex-end"
+        justifyContent: "flex-end",
+
 
     },
     title: {

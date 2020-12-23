@@ -1,24 +1,25 @@
 import {StatusBar} from 'expo-status-bar';
 import React from 'react';
-import {StyleSheet, View, TouchableWithoutFeedback, Keyboard, Alert} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import NavbarContainer from "./Components/Navbar/NavbarContainer";
 import TodosContainer from "./Components/Todos/TodosContainer";
 import TodosInputContainer from "./Components/TodoInput/TodosInputCintainer";
 import {Footer} from "./Components/Footer/Footer";
 
 
+
 const Main = () => {
 
     return (
 
-            <View style={styles.wrapper}>
+            <View style={StyleSheet.flatten([styles.wrapper])}>
                 <StatusBar style="light"/>
                 <NavbarContainer/>
                 <View style={styles.container}>
                     <TodosInputContainer/>
                     <TodosContainer/>
                 </View>
-                {/*<Footer/>*/}
+                <Footer/>
 
             </View>
 
@@ -28,7 +29,9 @@ const Main = () => {
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1,
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+        position: "relative",
+        backgroundColor: "#f8f8f8",
     },
     container: {
         flex: 1,

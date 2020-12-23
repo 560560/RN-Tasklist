@@ -15,6 +15,10 @@ const styles = StyleSheet.create({
         height: 50,
         alignItems: "center",
         justifyContent: "center",
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0
     },
     text: {
         color: "#000",

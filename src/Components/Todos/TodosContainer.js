@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import {checkTodo, editTodo, getTodos, removeTodo, setEditMode, setRefreshing} from "../../redux/todos-reducer";
 import {connect} from "react-redux"
 import Todos from "./Todos";
+import {getSelectedTodos} from "../../redux/todosSelectors";
 
 
 class TodosContainer extends Component {
@@ -31,9 +32,10 @@ class TodosContainer extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    todos: state.todos.todos,
+    todos: getSelectedTodos(state),
     isRefreshing: state.todos.isRefreshing,
-    todoUnderEdit: state.todos.todoUnderEdit
+    todoUnderEdit: state.todos.todoUnderEdit,
+    isLoading: state.todos.isLoading
 })
 
 export default connect(mapStateToProps, {getTodos, removeTodo, checkTodo, setRefreshing, setEditMode, editTodo})(TodosContainer);

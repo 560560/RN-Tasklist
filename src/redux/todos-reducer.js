@@ -15,7 +15,9 @@ const initialState = {
     todos: [],
     isLoading: false,
     isRefreshing: false,
-    todoUnderEdit: null
+    todoUnderEdit: null,
+    showDoneTasks: true
+
 
 }
 
@@ -35,19 +37,19 @@ const todosReducer = (state = initialState, action) => {
             return {
                 ...state,
                 todos: [...state.todos].map(todo => {
-                    if (todo.id === action.id) {
+                    if (todo._id === action._id) {
                         todo.editMode = action.value
                         return todo
                     } else{
                         return todo
                     }
                 }),
-                todoUnderEdit: action.value ? action.id : null
+                todoUnderEdit: action.value ? action._id : null
             }
         case SET_NEW_TODO:
             return {
                 ...state,
-                todos: [action.todo, ...state.todos]
+                todos: [action.savedTodo, ...state.todos]
             }
         case SET_TODOS:
             return {
@@ -57,13 +59,13 @@ const todosReducer = (state = initialState, action) => {
         case DELETE_TODO:
             return {
                 ...state,
-                todos: [...state.todos].filter(todo => todo.id !== action.id)
+                todos: [...state.todos].filter(todo => todo._id !== action._id)
             }
         case  EDIT_TODO:
             return {
                 ...state,
                 todos: [...state.todos].map(todo => {
-                    if (todo.id === action.todo.id) {
+                    if (todo._id === action.todo._id) {
                         return action.todo
                     } else {
                         return todo
@@ -87,10 +89,10 @@ const setIsLoading = (loadingStatus) => {
     }
 }
 
-export const setEditMode = (id, value) => {
+export const setEditMode = (_id, value) => {
     return {
         type: SET_EDIT_MODE,
-        id,
+        _id,
         value
     }
 }
@@ -102,25 +104,24 @@ const setTodos = (todos) => {
     }
 }
 
-const setNewTodo = (todo) => {
+const setNewTodo = (savedTodo) => {
     return {
         type: SET_NEW_TODO,
-        todo
+        savedTodo
     }
 }
 
 const setEditedTodo = (todo) => {
-
     return {
         type: EDIT_TODO,
         todo
     }
 }
 
-const deleteTodo = (id) => {
+const deleteTodo = (_id) => {
     return {
         type: DELETE_TODO,
-        id
+        _id
     }
 }
 
@@ -153,7 +154,7 @@ export const addTodo = (title) => async (dispatch) => {
         let response = await instance.post("todos", {title: title})
 
         if (response.status === 200 && response.data.status === 201) {
-            dispatch(setNewTodo(response.data.newTodo))
+            dispatch(setNewTodo(response.data.savedTodo))
         }
     } catch (e) {
         Alert("Что то пошло не так: " + e)
@@ -163,14 +164,14 @@ export const addTodo = (title) => async (dispatch) => {
 
 
 //thunk-creator Изменение текста задания
-export const editTodo = (id, newTitle) => async (dispatch) => {
+export const editTodo = (_id, newTitle) => async (dispatch) => {
 
     dispatch(setIsLoading(true))
     try {
-        let response = await instance.post("todo-edit", {id: id, newTitle: newTitle})
+        let response = await instance.post("todo-edit", {id: _id, newTitle: newTitle})
 
-        if (response.status === 200 && response.data.status === 201) {
-            dispatch(setEditedTodo(response.data.modifidedTodo[0]))
+        if (response.status === 200 && response.data.status === "Success") {
+            dispatch(setEditedTodo(response.data.modifidedTodo))
 
         }
     } catch (e) {
@@ -180,14 +181,14 @@ export const editTodo = (id, newTitle) => async (dispatch) => {
 }
 
 //thunk-creator Изменение статуса выполнения задания
-export const checkTodo = (id) => async (dispatch) => {
+export const checkTodo = (_id, isDone) => async (dispatch) => {
 
     dispatch(setIsLoading(true))
     try {
-        let response = await instance.post("todo-done", {id: id})
+        let response = await instance.post("todo-done", {id: _id, isDone: isDone})
 
-        if (response.status === 200 && response.data.status === 201) {
-            dispatch(setEditedTodo(response.data.modifidedTodo[0]))
+        if (response.status === 200 && response.data.status === "Success") {
+            dispatch(setEditedTodo(response.data.modifidedTodo))
 
         }
     } catch (e) {
@@ -198,15 +199,13 @@ export const checkTodo = (id) => async (dispatch) => {
 
 
 //thunk-creator Удаление задания
-export const removeTodo = (id) => async (dispatch) => {
+export const removeTodo = (_id) => async (dispatch) => {
     dispatch(setIsLoading(true))
-    console.log(1)
-    let response = await instance.delete("todos", {data: {id: id}})
+    let response = await instance.delete("todos", {data: {id: _id}})
+
     try {
         if (response.status === 200 && response.data.status === "Success") {
-            dispatch(deleteTodo(id))
-            console.log(response.data.message)
-
+            dispatch(deleteTodo(_id))
         }
     } catch (e) {
         Alert("Что то пошло не так: " + e)
