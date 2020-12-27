@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-
 import {checkTodo, editTodo, getTodos, removeTodo, setEditMode, setRefreshing} from "../../redux/todos-reducer";
 import {connect} from "react-redux"
 import Todos from "./Todos";
 import {getSelectedTodos} from "../../redux/todosSelectors";
+import {getDoneTodos} from "../../redux/todosSelectors";
 
 
 
@@ -27,13 +27,14 @@ class TodosContainer extends Component {
 
     render() {
         return (
-            <Todos {...this.props}  onRefresh={this.onRefresh} />
+            <Todos {...this.props}  onRefresh={this.onRefresh}/>
         );
     }
 }
 
 const mapStateToProps = (state) => ({
     todos: getSelectedTodos(state),
+    doneTodos: getDoneTodos(state),
     isRefreshing: state.todos.isRefreshing,
     todoUnderEdit: state.todos.todoUnderEdit,
     isLoading: state.todos.isLoading

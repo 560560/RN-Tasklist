@@ -13,6 +13,12 @@ export const Footer = ({showDoneTasks, setShowDoneTasks, getTodos, setScreenToSh
         }
     }
 
+    const onPressDoneTasksHandler = () => {
+        if (screenToShow !== "doneTodos") {
+            setScreenToShow("doneTodos")
+        }
+    }
+
     const onPressTasksHandler = () => {
         if (screenToShow !== "todos") {
             setScreenToShow("todos")
@@ -26,8 +32,8 @@ export const Footer = ({showDoneTasks, setShowDoneTasks, getTodos, setScreenToSh
             <TouchableOpacity onPress={() => onPressTasksHandler()}>
                 <FontAwesome5 name="clipboard-list" size={40} color={screenToShow === "todos" ? "#1334a9" : "#7d8ec8"}/>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setShowDoneTasks(!showDoneTasks)}>
-                <FontAwesome5 name="tasks" size={38} color={showDoneTasks ? "#1334a9" : "#7d8ec8"} style={screenToShow === "todos" ? {opacity: 1} : {opacity: 0}}/>
+            <TouchableOpacity onPress={() => onPressDoneTasksHandler()}>
+                <FontAwesome5 name="tasks" size={38} color={screenToShow === "doneTodos" ? "#1334a9" : "#7d8ec8"}/>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => onPressProfileHandler()}>
                 <MaterialIcons name="account-circle" size={45} color={screenToShow === "profile" ? "#1334a9" : "#7d8ec8"}/>

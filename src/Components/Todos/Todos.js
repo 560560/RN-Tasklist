@@ -4,9 +4,8 @@ import {FlatList, View, StyleSheet, RefreshControl} from "react-native";
 
 import {TodoItem} from "./TodoItem/TodoItem";
 
-const Todos = ({todos, isRefreshing, removeTodo, checkTodo, onRefresh, setEditMode, editTodo, todoUnderEdit, isLoading}) => {
+const Todos = ({todos, doneTodos, isRefreshing, removeTodo, checkTodo, onRefresh, setEditMode, editTodo, todoUnderEdit, isLoading, renderScreen}) => {
     let todosQuantity = todos.length
-
     return (
         <View style={styles.todosWrapper}>
 
@@ -15,7 +14,7 @@ const Todos = ({todos, isRefreshing, removeTodo, checkTodo, onRefresh, setEditMo
                 refreshControl={
                     <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh}/>
                 }
-                data={todos}
+                data={renderScreen === "todos" ? todos : doneTodos}
                 renderItem={({item, index}) => (
 
                     <TodoItem todo={item.title} _id={item._id} isDone={item.isDone} editMode={item.editMode} removeTodo={removeTodo} checkTodo={checkTodo}

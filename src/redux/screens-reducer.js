@@ -7,6 +7,7 @@ let initialState = {
 }
 
 const screensReducer = (state = initialState, action) => {
+
     switch (action.type) {
         case SET_SCREEN_TO_SHOW:
             return {

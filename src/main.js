@@ -1,14 +1,12 @@
 import {StatusBar} from 'expo-status-bar';
 import React from 'react';
-import {ImageBackground, StyleSheet, View} from 'react-native';
-import NavbarContainer from "./Components/Navbar/NavbarContainer";
-
-import bckgTodos from "../assets/bckgTodos.jpg";
+import { StyleSheet, View} from 'react-native';
 import FooterContainer from "./Components/Footer/FooterContainer";
 import {connect} from "react-redux";
-import {setScreenToShow} from "./redux/screens-reducer";
 import TodosScreen from "./Screens/TodosScreen";
 import ProfileScreen from "./Screens/ProfileScreen";
+import NavbarContainer from "./Components/Navbar/NavbarContainer";
+
 
 
 const Main = ({screenToShow}) => {
@@ -21,8 +19,10 @@ const Main = ({screenToShow}) => {
             <NavbarContainer/>
             {
                 screenToShow === "todos"
-                ? <TodosScreen/>
-                : screenToShow === "profile" && <ProfileScreen/>
+                ? <TodosScreen renderScreen={"todos"}/>
+                : screenToShow === "doneTodos"
+                    ? <TodosScreen renderScreen={"doneTodos"}/>
+                    : screenToShow === "profile" && <ProfileScreen/>
             }
 
 
