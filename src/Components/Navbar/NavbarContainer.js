@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import {Navbar} from "./Navbar";
 import {connect} from "react-redux";
 import {View} from "react-native";
-import {getAppName} from "../../redux/navbar-reducer";
+import {getConnectionStatus} from "../../redux/navbar-reducer";
+
 
 class NavbarContainer extends Component {
     constructor(props) {
@@ -11,7 +12,7 @@ class NavbarContainer extends Component {
     }
 
     componentDidMount() {
-        this.props.getAppName()
+        this.props.getConnectionStatus()
     }
 
     render() {
@@ -28,4 +29,4 @@ const mapStateToProps = (state) => ({
     appName: state.navbarPanel.appName,
 })
 
-export default connect(mapStateToProps, {getAppName}) (NavbarContainer);
+export default connect(mapStateToProps, {getConnectionStatus}) (NavbarContainer);

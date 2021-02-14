@@ -1,6 +1,6 @@
 import React from 'react';
 import TodosInputContainer from "../Components/TodoInput/TodosInputCintainer";
-import TodosContainer from "../Components/Todos/TodosContainer";
+import Todos from "../Components/Todos/Todos";
 import {StyleSheet, View, Text} from "react-native";
 
 
@@ -12,11 +12,10 @@ const TodosScreen = ({renderScreen}) => {
                 : <View style={styles.titleWrapper}>
                     <Text  style={styles.title}>Выполненные задачи</Text>
                 </View>}
-            <TodosContainer renderScreen={renderScreen}/>
+            <Todos renderScreen={renderScreen}/>
         </View>
     );
 }
-
 
 const styles = StyleSheet.create({
     
@@ -30,8 +29,6 @@ const styles = StyleSheet.create({
         borderBottomWidth: 3,
         borderBottomColor: "#1334a9",
         marginBottom: 10
-
-
     },
 
     title : {

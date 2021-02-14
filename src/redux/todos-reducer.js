@@ -1,6 +1,6 @@
 import * as axios from "axios";
 import {Alert} from "react-native-web";
-
+import {getConnectionStatus} from "./navbar-reducer";
 
 const SET_IS_LOADING = "SET_IS_LOADING"
 const SET_NEW_TODO = "SET_NEW_TODO"
@@ -11,16 +11,12 @@ const SET_REFRESHING = "SET_REFRESHING"
 const SET_EDIT_MODE = "SET_EDIT_MODE"
 const SET_SHOW_DONE_TASKS = "SET_SHOW_DONE_TASKS"
 
-
 const initialState = {
     todos: [],
     isLoading: false,
     isRefreshing: false,
     todoUnderEdit: null,
     showDoneTasks: true,
-
-
-
 }
 
 const instance = axios.create({
@@ -164,6 +160,7 @@ export const getTodos = () => async (dispatch) => {
 export const addTodo = (title) => async (dispatch) => {
     dispatch(setIsLoading(true))
     try {
+        dispatch(getConnectionStatus())
         let response = await instance.post("todos", {title: title})
 
         if (response.status === 200 && response.data.status === 201) {
@@ -181,6 +178,7 @@ export const editTodo = (_id, newTitle) => async (dispatch) => {
 
     dispatch(setIsLoading(true))
     try {
+        dispatch(getConnectionStatus())
         let response = await instance.post("todo-edit", {id: _id, newTitle: newTitle})
 
         if (response.status === 200 && response.data.status === "Success") {
@@ -198,6 +196,7 @@ export const checkTodo = (_id, isDone) => async (dispatch) => {
 
     dispatch(setIsLoading(true))
     try {
+        dispatch(getConnectionStatus())
         let response = await instance.post("todo-done", {id: _id, isDone: isDone})
 
         if (response.status === 200 && response.data.status === "Success") {
@@ -217,6 +216,7 @@ export const removeTodo = (_id) => async (dispatch) => {
     let response = await instance.delete("todos", {data: {id: _id}})
 
     try {
+        dispatch(getConnectionStatus())
         if (response.status === 200 && response.data.status === "Success") {
             dispatch(deleteTodo(_id))
         }

@@ -1,8 +1,17 @@
-import React from "react"
+import React, {useEffect} from "react"
 import {StyleSheet, Text, View} from 'react-native'
+import {useDispatch} from "react-redux";
+import {getConnectionStatus} from "../../redux/navbar-reducer";
+
 
 
 export const Navbar = ({appName}) => {
+
+    const dispatch = useDispatch()
+
+    useEffect (() => {
+        dispatch(getConnectionStatus())
+    }, [])
 
     return (
         <View style={[styles.navigationBar]}>
