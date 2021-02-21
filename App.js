@@ -1,16 +1,31 @@
-import React, {useState} from 'react';
-import Main from "./src/main";
-import {Provider} from "react-redux";
-import store from "./src/redux/redux-store";
+import React from 'react';
+import Main from './src/main';
+import {Provider} from 'react-redux';
+import { store, persistor } from './src/redux/redux-store';
+import { PersistGate } from 'redux-persist/integration/react'
+import {View, ActivityIndicator} from 'react-native';
 
 
 const App = () => {
 
+  const renderLoading = () => {
     return (
-        <Provider store={store}>
-            <Main/>
-        </Provider>
+        <View>
+          <ActivityIndicator size={"large"} />
+        </View>
     );
-}
+  };
 
-export default App
+  return (
+      <Provider store={store}>
+        <PersistGate
+            persistor={persistor}
+            loading={renderLoading()}
+        >
+          <Main/>
+        </PersistGate>
+      </Provider>
+  );
+};
+
+export default App;
