@@ -1,13 +1,15 @@
 import {Alert} from "react-native";
 
-export const infoAlert = (info1, info2) => {
+export const infoAlert = (info1, info2, cb = null) => {
     Alert.alert(
         `${info1}`,
         `${info2}`,
         [
             {
             },
-            { text: "OK", onPress: () => console.log("OK Pressed") }
+            { text: "OK", onPress: () => {
+                cb && cb()
+              } }
         ],
         { cancelable: false }
     );

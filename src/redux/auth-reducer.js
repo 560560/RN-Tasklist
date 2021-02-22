@@ -1,12 +1,21 @@
-const SET_AUTH_KEY = 'SET_AUTH_KEY';
-const SET_EMAIL = 'SET_EMAIL';
-const SET_PASS = 'SET_PASS';
+import {authApi} from '../api/api';
+import {getConnectionStatus} from './navbar-reducer';
+import {setScreenToShow} from './screens-reducer';
+
+const SET_AUTH_KEY = 'AUTH_APP/SET_AUTH_KEY';
+const SET_EMAIL = 'AUTH_APP/SET_EMAIL';
+const SET_PASS = 'AUTH_APP/SET_PASS';
+const SET_NAME = 'AUTH_APP/SET_NAME';
+const SET_ERROR = 'AUTH_APP/SET_ERROR';
+const SET_IS_LOADING = 'AUTH_APP/SET_IS_LOADING';
 
 
 const initialState = {
-  authKey: '6a7c4620-714a-11eb-8927-214edb85a988!',
+  authKey: null,
   login: null,
   pass: null,
+  authError: null,
+  name: null,
 };
 
 const authReducer = (state = initialState, action) => {
@@ -23,13 +32,30 @@ const authReducer = (state = initialState, action) => {
         email: action.email,
       };
 
+    case SET_NAME:
+      return {
+        ...state,
+        name: action.name,
+      };
+
     case SET_PASS:
       return {
         ...state,
         pass: action.pass,
       };
 
-      default:
+    case SET_ERROR:
+      return {
+        ...state,
+        authError: action.error,
+      };
+
+    case SET_IS_LOADING:
+      return {
+        ...state,
+        isLoading: action.loadingStatus,
+      };
+    default:
       return state;
 
 
@@ -39,34 +65,69 @@ const authReducer = (state = initialState, action) => {
 //action creater добавления в стейт authKey
 export const setAuthKey = (authKey) => ({
   type: SET_AUTH_KEY,
-  authKey
+  authKey,
 
-})
+});
 
 //action creater добавления в стейт login
-const setLogin = (email) => ({
+const setEmail = (email) => ({
   type: SET_EMAIL,
-  email
+  email,
 
-})
+});
+
+//action creater добавления в стейт name
+const setName = (name) => ({
+  type: SET_NAME,
+  name,
+
+});
 
 //action creater добавления в стейт pass
-const set = (pass) => ({
+const setPass = (pass) => ({
   type: SET_PASS,
-  pass
-})
+  pass,
+});
 
-/*
+//action creater добавления в стейт Ошибки с бэка
+export const setAuthError = (error) => {
+  const errors = {
+    'Wrong password': 'Указан неверный логин или пароль ',
+    'No user': 'Пользователя с таким e-mail не существует',
+  };
+  return {
+    type: SET_ERROR, error: errors[error],
+  };
+};
 
-export const logIn = (email, pass, saveMe) => async (dispatch) => {
+const setIsLoading = (loadingStatus) => {
+  return {
+    type: SET_IS_LOADING,
+    loadingStatus,
+  };
+};
+
+export const logIn = (email, pass, saveMe = false) => async (dispatch) => {
+  dispatch(setIsLoading(true));
   try {
-       const response = await axios
+    const response = await authApi.logInWithAPI(email, pass);
+    if (response.status === 200 && response.data.status === 'Authorize success') {
+      dispatch(setAuthKey(response.data.authKey));
+      dispatch(setName(response.data.name));
+      if (saveMe) {
+        dispatch(setEmail(email));
+        dispatch(setPass(pass));
+      }
+      dispatch(dispatch(setScreenToShow('todos')));
+    } else if (response.status === 200 && (response.data.status === 'Wrong password' || response.data.status === 'No user')) {
+      dispatch(setAuthError(response.data.status));
+    }
+
+  } catch (err) {
+    console.error(err);
   }
-  catch (err) {
-    console.error(err)
-  }
-}
-*/
+  dispatch(setIsLoading(false));
+};
 
 
-export default authReducer
+export default authReducer;

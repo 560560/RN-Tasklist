@@ -151,7 +151,6 @@ export const getTodos = () => async (dispatch, getState) => {
   try {
     dispatch(getConnectionStatus());
     const authKey = getState().authApp.authKey;
-    console.log("authKey = ", authKey)
     const response = await todosApi.getTodosWithAPI(authKey);
     if (response.status === 200 && response.data.status === 'Loaded') {
       dispatch(setTodos(response.data.todos));
