@@ -5,16 +5,19 @@ import navbarReducer from './navbar-reducer';
 import screensReducer from './screens-reducer';
 import {persistStore, persistReducer} from 'redux-persist';
 import AsyncStorage from '@react-native-community/async-storage'
+import authReducer from './auth-reducer';
 
 let reducers = combineReducers({
   todos: todosReducer,
   navbarPanel: navbarReducer,
   screens: screensReducer,
+  authApp: authReducer,
 
 });
 
 const persistConfig = {
   key: "root",
+  blacklist: ['screens', 'navbarPanel', 'todos'],
   storage: AsyncStorage
 };
 

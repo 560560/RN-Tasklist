@@ -1,80 +1,81 @@
-import * as axios from "axios";
-import {errorAlert} from "../Common/errorAllert";
+import {infoAlert} from '../Common/allertsModal';
+import {navbarApi} from '../api/api';
+import {setScreenToShow} from './screens-reducer';
 
-const SET_APP_NAME = "SET_APP_NAME"
-const SET_CONNECTION_STATUS = "SET_CONNECTION_STATUS"
-const SET_CONNECTION_TRYING = "SET_CONNECTION_TRYING"
+const SET_APP_NAME = 'SET_APP_NAME';
+const APP_INITIALIZE = 'APP_INITIALIZE';
 
-
-let initialState = {
-    appName: "",
-    connectionStatus: false,
-}
+const initialState = {
+  appName: '',
+  connectionStatus: false,
+  appInitialized: false,
+};
 
 const navbarReducer = (state = initialState, action) => {
-    switch (action.type) {
-        case SET_APP_NAME:
-            return {
-                ...state,
-                appName: action.appName
-            }
-
-        case SET_CONNECTION_STATUS:
-            return {
-                ...state,
-                connectionStatus: action.status
-            }
-
-
-        default:
-            return state
-    }
-}
+  switch (action.type) {
+    case SET_APP_NAME:
+      return {
+        ...state,
+        appName: action.appName,
+      };
+    case APP_INITIALIZE :
+      return {
+        ...state,
+        appInitialized: true,
+      };
+    default:
+      return state;
+  }
+};
 
 const setAppName = (appName) => {
-    return {
-        type: SET_APP_NAME,
-        appName
-    }
-}
+  return {
+    type: SET_APP_NAME,
+    appName,
+  };
+};
 
-const setConnectionStatus = (status) => {
-    return {
-        type: SET_CONNECTION_STATUS,
-        status
-    }
-}
+const setAppInitialize = () => ({
+  type: APP_INITIALIZE,
+});
 
 
 //thunk-creator Запроса Title с бэка
 const getAppName = () => async (dispatch) => {
-    try {
-        let response = await axios.get("http://agro-api.site:4000/appName")
-        dispatch(setAppName(response.data.appName))
+  try {
+    const response = await navbarApi.getAppNameWithAPI();
 
-    } catch (e) {
-        dispatch(setAppName("НЕТ СВЯЗИ С СЕРВЕРОМ"))
-    }
-}
+    dispatch(setAppName(response.data.appName));
+
+  } catch (e) {
+    dispatch(setAppName('НЕТ СВЯЗИ С СЕРВЕРОМ'));
+  }
+};
 
 //thunk-creator статуса соединения с бэка
 export const getConnectionStatus = () => async (dispatch, getState) => {
-    try {
-        let response = await axios.get("http://agro-api.site:4000/status")
-        if (response.data.status) {
-            dispatch(getAppName())
-        } else {
-            errorAlert()
-        }
-
-    } catch (e) {
-        errorAlert()
-        if (!getState().navbarPanel.appName) {
-            dispatch(setAppName("НЕТ СВЯЗИ С СЕРВЕРОМ"))
-        } else {
-            dispatch(setAppName("СВЯЗЬ С СЕРВЕРОМ ПОТЕРЯНА"))
-        }
+  try {
+    const response = await navbarApi.getConnectionStatusWithAPI();
+    if (response.data.status) {
+      dispatch(getAppName());
+      if (!getState().authApp.authKey) {
+        dispatch(setScreenToShow('login'));
+      }
+      if (!getState().navbarPanel.appInitialized) {
+        dispatch(setAppInitialize());
+      }
+    } else {
+      infoAlert('Ошибка запроса на сервер', 'Проверьте связь с сетью Интернет');
     }
-}
 
-export default navbarReducer
+  } catch (e) {
+    infoAlert('Ошибка запроса на сервер', 'Проверьте связь с сетью Интернет');
+    if (!getState().navbarPanel.appName) {
+      dispatch(setAppName('НЕТ СВЯЗИ С СЕРВЕРОМ'));
+    } else {
+      dispatch(setAppName('СВЯЗЬ С СЕРВЕРОМ ПОТЕРЯНА'));
+    }
+  }
+};
+
+export default navbarReducer;

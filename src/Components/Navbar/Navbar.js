@@ -1,39 +1,37 @@
-import React, {useEffect} from "react"
-import {StyleSheet, Text, View} from 'react-native'
-import {useDispatch} from "react-redux";
-import {getConnectionStatus} from "../../redux/navbar-reducer";
+import React, {useEffect} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {getConnectionStatus} from '../../redux/navbar-reducer';
 
 
+const Navbar = () => {
 
-export const Navbar = ({appName}) => {
+  const dispatch = useDispatch();
 
-    const dispatch = useDispatch()
+  const appName = useSelector(state => state.navbarPanel.appName);
 
-    useEffect (() => {
-        dispatch(getConnectionStatus())
-    }, [])
+  useEffect(() => {
+    dispatch(getConnectionStatus());
+  }, [dispatch, ]);
 
-    return (
-        <View style={[styles.navigationBar]}>
-            <Text style={styles.title}>{appName.toUpperCase()}</Text>
-        </View>
-    )
-
-
-}
+  return (
+      <View style={[styles.navigationBar]}>
+        <Text style={styles.title}>{appName.toUpperCase()}</Text>
+      </View>
+  );
+};
 const styles = StyleSheet.create({
-    navigationBar: {
+  navigationBar: {
 
-        backgroundColor: "#1334a9",
-        height: 60,
-        alignItems: "center",
-        justifyContent: "flex-end",
+    backgroundColor: '#1334a9',
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  title: {
+    color: '#fff',
+    paddingBottom: 10,
+  },
+});
 
-
-
-    },
-    title: {
-        color: "#fff",
-        paddingBottom: 10
-    }
-})
+export default Navbar;
