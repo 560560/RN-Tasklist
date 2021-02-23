@@ -10,10 +10,10 @@ const Todos = ({renderScreen}) => {
 
   const dispatch = useDispatch();
 
+
   const isRefreshing = useSelector(state => state.todos.isRefreshing) || false;
   const todos = useSelector(state => getSelectedTodos(state));
   const doneTodos = useSelector(state => getDoneTodos(state));
-
 
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 import * as axios from 'axios';
 import {Alert} from 'react-native';
 import {getConnectionStatus} from './navbar-reducer';
-import {todosApi} from '../api/api';
+import {authApi, todosApi} from '../api/api';
 import {infoAlert} from '../Common/allertsModal';
 import {setAuthKey} from './auth-reducer';
 
@@ -155,8 +155,8 @@ export const getTodos = () => async (dispatch, getState) => {
     if (response.status === 200 && response.data.status === 'Loaded') {
       dispatch(setTodos(response.data.todos));
     }
-    if (response.status === 200 && response.data.status === 'Auth Fail'){
-     dispatch(setAuthKey(null))
+    if (response.status === 200 && response.data.status === 'Auth Fail') {
+      dispatch(setAuthKey(null));
     }
 
   } catch (e) {
@@ -167,11 +167,12 @@ export const getTodos = () => async (dispatch, getState) => {
 };
 
 //thunk-creator Добавление нового задания
-export const addTodo = (title) => async (dispatch) => {
+export const addTodo = (title) => async (dispatch, getState) => {
   dispatch(setIsLoading(true));
   try {
     dispatch(getConnectionStatus());
-    const response = await todosApi.addTodoWithAPI(title);
+    const authKey = getState().authApp.authKey;
+    const response = await todosApi.addTodoWithAPI(title, authKey);
     if (response.status === 200 && response.data.status === 'Created') {
       dispatch(setNewTodo(response.data.savedTodo));
     }
@@ -181,7 +182,6 @@ export const addTodo = (title) => async (dispatch) => {
   dispatch(setIsLoading(false));
 };
 
-
 //thunk-creator Изменение текста задания
 export const editTodo = (_id, newTitle) => async (dispatch, getState) => {
 
@@ -189,8 +189,8 @@ export const editTodo = (_id, newTitle) => async (dispatch, getState) => {
   try {
     dispatch(getConnectionStatus());
     const authKey = getState().authApp.authKey;
-    const response = await todosApi.editTodoWithAPI(_id, newTitle);
-    if (response.status === 200 && response.data.status === 'Success') {
+    const response = await todosApi.editTodoWithAPI(_id, newTitle, authKey);
+    if (response.status === 200 && response.data.status === 'Modified') {
       dispatch(setEditedTodo(response.data.modifidedTodo));
 
     } else if (response.status === 200 && response.data.status === 'Empty id') {
@@ -223,15 +223,14 @@ export const checkTodo = (_id, isDone) => async (dispatch) => {
   dispatch(setIsLoading(false));
 };
 
-
 //thunk-creator Удаление задания
-export const removeTodo = (_id) => async (dispatch) => {
+export const removeTodo = (_id) => async (dispatch, getState) => {
   dispatch(setIsLoading(true));
-  const response = await instance.delete('todos', {data: {id: _id}});
-
   try {
     dispatch(getConnectionStatus());
-    if (response.status === 200 && response.data.status === 'Success') {
+    const authKey = getState().authApp.authKey;
+    const response = await todosApi.deleteTodoWithAPI(_id, authKey);
+    if (response.status === 200 && response.data.status === 'Deleted') {
       dispatch(deleteTodo(_id));
     }
   } catch (e) {

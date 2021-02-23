@@ -7,6 +7,7 @@ const SET_EMAIL = 'AUTH_APP/SET_EMAIL';
 const SET_PASS = 'AUTH_APP/SET_PASS';
 const SET_NAME = 'AUTH_APP/SET_NAME';
 const SET_ERROR = 'AUTH_APP/SET_ERROR';
+const SET_SIGN_UP_STATUS = 'AUTH_APP/SET_SIGN_UP_STATUS';
 const SET_IS_LOADING = 'AUTH_APP/SET_IS_LOADING';
 
 
@@ -15,6 +16,7 @@ const initialState = {
   login: null,
   pass: null,
   authError: null,
+  signUpStatus: null,
   name: null,
 };
 
@@ -48,6 +50,12 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         authError: action.error,
+      };
+
+    case SET_SIGN_UP_STATUS:
+      return {
+        ...state,
+        signUpStatus: action.signUpStatus,
       };
 
     case SET_IS_LOADING:
@@ -92,11 +100,22 @@ const setPass = (pass) => ({
 //action creater добавления в стейт Ошибки с бэка
 export const setAuthError = (error) => {
   const errors = {
-    'Wrong password': 'Указан неверный логин или пароль ',
-    'No user': 'Пользователя с таким e-mail не существует',
+    'Wrong password': 'Указан неверный логин или пароль. ',
+    'No user': 'Пользователя с таким e-mail не существует.',
   };
   return {
     type: SET_ERROR, error: errors[error],
+  };
+};
+
+//action creater добавления в стейт статуса попытки регистрации
+export const setSignUpStatus = (signUpStatus) => {
+  const statuses = {
+    'Created': {success: true, message: 'Успешная регистрация. Теперь можно авторизоваться. '},
+    'Already exist': {success: false, message: 'Пользователь с таким e-mail уже существует.'},
+  };
+  return {
+    type: SET_SIGN_UP_STATUS, signUpStatus: statuses[signUpStatus],
   };
 };
 
@@ -119,13 +138,30 @@ export const logIn = (email, pass, saveMe = false) => async (dispatch) => {
         dispatch(setPass(pass));
       }
       dispatch(dispatch(setScreenToShow('todos')));
-    } else if (response.status === 200 && (response.data.status === 'Wrong password' || response.data.status === 'No user')) {
+    } else if (response.status === 200 && response.data.status !== 'Authorize success') {
       dispatch(setAuthError(response.data.status));
     }
 
   } catch (err) {
     console.error(err);
   }
+  dispatch(setIsLoading(false));
+};
+
+export const signUpUser = (name, email, pass) => async (dispatch) => {
+  dispatch(setIsLoading(true));
+  try {
+    console.log("name = ", name)
+    console.log("email = ", email)
+    console.log("pass = ", pass)
+    const response = await authApi.signUpUserWithAPI(name, email, pass);
+    if (response.status === 200 && response.data.status) {
+      dispatch(setSignUpStatus(response.data.status))
+    }
+  } catch (err) {
+    console.error(err);
+  }
+
   dispatch(setIsLoading(false));
 };
 

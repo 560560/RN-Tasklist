@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, TextInput, StyleSheet, Button, TouchableOpacity, ScrollView} from 'react-native';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -6,19 +6,33 @@ import {Entypo} from '@expo/vector-icons';
 import {AntDesign} from '@expo/vector-icons';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useDispatch, useSelector} from 'react-redux';
-import {logIn, setAuthError} from '../../redux/auth-reducer';
+import {logIn, setAuthError, setSignUpStatus, signUpUser} from '../../redux/auth-reducer';
 import {infoAlert} from '../../Common/allertsModal';
 
 const Login = () => {
 
   const dispatch = useDispatch();
   const authError = useSelector(state => state.authApp.authError);
+  const signUpStatus = useSelector(state => state.authApp.signUpStatus);
+  const [signUpMode, setSignUpMode] = useState(false);
+  const [needToClearFields, setNeedToClearFields] = useState(false);
 
   const clearAuthError = () => {
     dispatch(setAuthError(null));
   };
 
-  const [signUpMode, setSignUpMode] = useState(false);
+  const clearSignUpStatus = () => {
+    dispatch(setSignUpStatus(null));
+  };
+
+  useEffect(() => {
+    if (signUpStatus?.success) {
+      setSignUpMode(false);
+      setNeedToClearFields(true);
+    } else if (!signUpStatus && needToClearFields) {
+      setNeedToClearFields(false);
+    }
+  }, [signUpStatus, setSignUpMode, needToClearFields, setNeedToClearFields]);
 
   const validationSchema = Yup.object({
     name: signUpMode
@@ -43,28 +57,22 @@ const Login = () => {
   };
 
   const getFormikData = (formData) => {
+    const name = formData?.name?.[0]?.toUpperCase() + formData?.name?.slice(1);
     const email = formData?.email?.toLowerCase();
     const pass = formData.pass;
     if (signUpMode) {
-
+      dispatch(signUpUser(name, email, pass));
     } else {
       dispatch(logIn(email, pass));
     }
-
   };
 
   return (
       <ScrollView>
         <Formik
             initialValues={initialValues}
-
             validationSchema={validationSchema}
-            onSubmit={(formData, {resetForm}) => {
-              getFormikData(formData);
-              if (signUpMode){
-                resetForm();
-              }
-            }}
+            onSubmit={getFormikData}
         >
           {({
               handleSubmit,
@@ -80,6 +88,14 @@ const Login = () => {
             if (!signUpMode) {
               delete errors['name'];
               delete errors['confirmPass'];
+            }
+
+            if (needToClearFields) {
+              delete values['name'];
+              delete values['email'];
+              delete values['pass'];
+              delete values['confirmPass'];
+//              setNeedToClearFields(false);
             }
 
             return (
@@ -115,7 +131,7 @@ const Login = () => {
                               onChangeText={handleChange('name')}
                               onBlur={handleBlur('name')}
                               value={values.name}
-                              placeholder="Введите Ваше имя"
+                              placeholder="Введите название профиля"
                           />
                           {errors.name && touched.name &&
                           <Text style={{fontSize: 10, color: 'red'}}>{errors.name}</Text>
@@ -200,6 +216,7 @@ const Login = () => {
           }}
         </Formik>
         {authError && infoAlert('Ошибка входа', authError, clearAuthError)}
+        {signUpStatus && infoAlert('Статус регистрации:', signUpStatus?.message, clearSignUpStatus)}
       </ScrollView>
   );
 };
