@@ -24,6 +24,9 @@ export const todosApi = {
   deleteTodoWithAPI(_id, authKey) {
     return instance.delete('todos', {data: {id: _id, authKey: authKey}});
   },
+  checkTodoWithAPI(_id, isDone, authKey) {
+    return instance.post('todo-done', {id: _id, isDone: isDone, authKey: authKey});
+  },
   editTodoWithAPI(_id, newTitle, authKey) {
     return instance.post('todo-edit', {id: _id, newTitle: newTitle, authKey: authKey});
   },

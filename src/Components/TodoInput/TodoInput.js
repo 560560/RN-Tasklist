@@ -1,13 +1,17 @@
 import React, {useState} from "react"
 import {StyleSheet, View, TextInput, Button, Alert} from 'react-native'
+import {useDispatch} from 'react-redux';
+import {addTodo} from '../../redux/todos-reducer';
 
 
 
-export const TodoInput = ({addTodo}) => {
+export const TodoInput = () => {
+    const dispatch =  useDispatch()
     const [value, setValue] = useState("")
+
     const onPressHandler = () => {
         if (value.trim()) {
-            addTodo(value)
+            dispatch(addTodo(value))
             setValue("")
         } else {
             Alert.alert("Название дела не может быть пустым")
@@ -42,7 +46,8 @@ const styles = StyleSheet.create({
         width: "70%",
         borderBottomColor: "#1334a9",
         borderStyle: "solid",
-        borderBottomWidth: 2
+        borderBottomWidth: 2,
+        fontSize: 15
     }
 
 })

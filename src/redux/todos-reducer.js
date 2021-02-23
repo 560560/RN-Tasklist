@@ -1,18 +1,17 @@
 import * as axios from 'axios';
-import {Alert} from 'react-native';
 import {getConnectionStatus} from './navbar-reducer';
-import {authApi, todosApi} from '../api/api';
+import {todosApi} from '../api/api';
 import {infoAlert} from '../Common/allertsModal';
 import {setAuthKey} from './auth-reducer';
 
-const SET_IS_LOADING = 'SET_IS_LOADING';
-const SET_NEW_TODO = 'SET_NEW_TODO';
-const SET_TODOS = 'SET_TODOS';
-const DELETE_TODO = 'DELETE_TODO';
-const EDIT_TODO = 'EDIT_TODO';
-const SET_REFRESHING = 'SET_REFRESHING';
-const SET_EDIT_MODE = 'SET_EDIT_MODE';
-const SET_SHOW_DONE_TASKS = 'SET_SHOW_DONE_TASKS';
+const SET_IS_LOADING = 'TODOS/SET_IS_LOADING';
+const SET_NEW_TODO = 'TODOS/SET_NEW_TODO';
+const SET_TODOS = 'TODOS/SET_TODOS';
+const DELETE_TODO = 'TODOS/DELETE_TODO';
+const EDIT_TODO = 'TODOS/EDIT_TODO';
+const SET_REFRESHING = 'TODOS/SET_REFRESHING';
+const SET_EDIT_MODE = 'TODOS/SET_EDIT_MODE';
+const SET_SHOW_DONE_TASKS = 'TODOS/SET_SHOW_DONE_TASKS';
 
 const initialState = {
   todos: null,
@@ -29,11 +28,13 @@ const instance = axios.create({
 
 const todosReducer = (state = initialState, action) => {
   switch (action.type) {
+
     case SET_IS_LOADING:
       return {
         ...state,
         isLoading: action.loadingStatus,
       };
+
     case SET_EDIT_MODE:
       return {
         ...state,
@@ -47,21 +48,25 @@ const todosReducer = (state = initialState, action) => {
         }),
         todoUnderEdit: action.value ? action._id : null,
       };
+
     case SET_NEW_TODO:
       return {
         ...state,
         todos: [action.savedTodo, ...state.todos],
       };
+
     case SET_TODOS:
       return {
         ...state,
         todos: action.todos,
       };
+
     case DELETE_TODO:
       return {
         ...state,
         todos: [...state.todos].filter(todo => todo._id !== action._id),
       };
+
     case  EDIT_TODO:
       return {
         ...state,
@@ -73,16 +78,19 @@ const todosReducer = (state = initialState, action) => {
           }
         }),
       };
+
     case SET_REFRESHING:
       return {
         ...state,
         isRefreshing: action.status,
       };
+
     case SET_SHOW_DONE_TASKS:
       return {
         ...state,
         showDoneTasks: action.newValue,
       };
+
     default:
       return state;
   }
@@ -154,11 +162,9 @@ export const getTodos = () => async (dispatch, getState) => {
     const response = await todosApi.getTodosWithAPI(authKey);
     if (response.status === 200 && response.data.status === 'Loaded') {
       dispatch(setTodos(response.data.todos));
-    }
-    if (response.status === 200 && response.data.status === 'Auth Fail') {
+    } else if (response.status === 200 && response.data.status === 'Auth Fail') {
       dispatch(setAuthKey(null));
     }
-
   } catch (e) {
     infoAlert('Ответ от сервера:', 'Ошибка выполнения запроса');
   }
@@ -184,7 +190,6 @@ export const addTodo = (title) => async (dispatch, getState) => {
 
 //thunk-creator Изменение текста задания
 export const editTodo = (_id, newTitle) => async (dispatch, getState) => {
-
   dispatch(setIsLoading(true));
   try {
     dispatch(getConnectionStatus());
@@ -206,16 +211,14 @@ export const editTodo = (_id, newTitle) => async (dispatch, getState) => {
 };
 
 //thunk-creator Изменение статуса выполнения задания
-export const checkTodo = (_id, isDone) => async (dispatch) => {
-
+export const checkTodo = (_id, isDone) => async (dispatch, getState) => {
   dispatch(setIsLoading(true));
   try {
+    const authKey = getState().authApp.authKey;
     dispatch(getConnectionStatus());
-    const response = await instance.post('todo-done', {id: _id, isDone: isDone});
-
-    if (response.status === 200 && response.data.status === 'Success') {
+    const response = await todosApi.checkTodoWithAPI(_id, isDone, authKey);
+    if (response.status === 200 && response.data.status === 'Modified') {
       dispatch(setEditedTodo(response.data.modifidedTodo));
-
     }
   } catch (e) {
     infoAlert('Ответ от сервера:', 'Ошибка выполнения запроса');

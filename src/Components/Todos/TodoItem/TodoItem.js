@@ -3,9 +3,9 @@ import {StyleSheet, Text, View, TouchableWithoutFeedback, TouchableOpacity, Aler
 import {MaterialIcons} from '@expo/vector-icons';
 import {useDispatch, useSelector} from 'react-redux';
 import {getDoneTodos, getSelectedTodos} from '../../../redux/todosSelectors';
-import {checkTodo, editTodo, removeTodo, setEditMode} from "../../../redux/todos-reducer";
+import {checkTodo, editTodo, removeTodo, setEditMode} from '../../../redux/todos-reducer';
 
-export const TodoItem = ({todo, _id, isDone, editMode, index, renderScreen}) => {
+export const TodoItem = ({todo, _id, isDone, date, editMode, index, renderScreen}) => {
   const dispatch = useDispatch();
   const [value, setValue] = useState(todo);
   const todosQuantity = useSelector(state => getSelectedTodos(state).length);
@@ -49,6 +49,7 @@ export const TodoItem = ({todo, _id, isDone, editMode, index, renderScreen}) => 
     );
 
   };
+
   const applyChanges = () => {
     onEditHandler();
   };
@@ -65,7 +66,6 @@ export const TodoItem = ({todo, _id, isDone, editMode, index, renderScreen}) => 
               setEditModeHandler(_id, false);
             },
           },
-
           {
             text: 'Нет',
             style: 'cancel',
@@ -85,16 +85,9 @@ export const TodoItem = ({todo, _id, isDone, editMode, index, renderScreen}) => 
 
   };
 
-  const calculateViewStyle = () => {
-    if (renderScreen === 'todos') {
-      return (index + 1) < todosQuantity ? {borderBottomWidth: 1, borderColor: '#c0ccf8'} : {};
-    } else if (renderScreen === 'doneTodos') {
-      return (index + 1) < doneTodosQuantity ? {borderBottomWidth: 1, borderColor: '#c0ccf8'} : {};
-    }
-  };
-
   return (
-      <View style={calculateViewStyle()}>
+      <View >
+        {date && <Text style={styles.separator}>{date}</Text>}
         <TouchableWithoutFeedback onPress={() => !editMode && !isLoading && checkTodoHandler(_id, !isDone)}
                                   onLongPress={() => !todoUnderEdit && setEditModeHandler(_id, true)}>
           {editMode
@@ -139,6 +132,9 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingLeft: 10,
     marginVertical: 7,
+    color: '#969696',
+    backgroundColor: '#efefef',
+    borderRadius: 3
   },
   todoItem: {
     paddingVertical: 5,
@@ -166,5 +162,13 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderBottomWidth: 1,
     fontSize: 17,
+  },
+  separator: {
+    textAlign: 'center',
+    fontSize: 15,
+    color: '#4c4c4c',
+    marginTop: 25,
+    paddingVertical: 10,
+
   },
 });

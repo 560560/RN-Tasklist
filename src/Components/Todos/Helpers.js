@@ -1,5 +1,7 @@
 import {getTodos, setRefreshing} from '../../redux/todos-reducer';
 import {getConnectionStatus} from '../../redux/navbar-reducer';
+import moment from 'moment';
+import tz from 'moment-timezone'
 
 
 export const onRefresh = (dispatch) => {
@@ -10,3 +12,18 @@ export const onRefresh = (dispatch) => {
     dispatch(setRefreshing(false));
   }, 2000);
 };
+
+
+export const addingDates = (todosArr) => {
+  let date = '';
+  return todosArr?.map(todo => {
+    const todoDate = moment(todo.created).format('DD MMMM YYYY');
+    if (todoDate !== date) {
+      date = todoDate;
+      return {...todo, date: todoDate};
+    } else {
+      date = todoDate;
+      return todo;
+    }
+  });
+}

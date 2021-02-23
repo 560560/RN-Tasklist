@@ -1,14 +1,14 @@
 import React from 'react';
-import TodosInputContainer from "../Components/TodoInput/TodosInputCintainer";
 import Todos from "../Components/Todos/Todos";
 import {StyleSheet, View, Text} from "react-native";
+import {TodoInput} from '../Components/TodoInput/TodoInput';
 
 
 const TodosScreen = ({renderScreen}) => {
     return (
         <View style={styles.container}>
             {renderScreen === "todos"
-                ? <TodosInputContainer/>
+                ? <TodoInput/>
                 : <View style={styles.titleWrapper}>
                     <Text  style={styles.title}>Выполненные задачи</Text>
                 </View>}
@@ -25,15 +25,15 @@ const styles = StyleSheet.create({
     },
     titleWrapper: {
         flex: 1,
-        maxHeight: 50,
-        borderBottomWidth: 3,
+        maxHeight: 40,
+        borderBottomWidth: 2,
         borderBottomColor: "#1334a9",
         marginBottom: 10
     },
 
     title : {
         textAlign: "center",
-        fontSize: 24
+        fontSize: 22
     }
 
 })

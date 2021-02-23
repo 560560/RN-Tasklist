@@ -1,24 +1,45 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {FlatList, View, StyleSheet, RefreshControl, Text} from 'react-native';
 import {TodoItem} from './TodoItem/TodoItem';
 import {useDispatch, useSelector} from 'react-redux';
 import {getDoneTodos, getSelectedTodos} from '../../redux/todosSelectors';
 import {getTodos} from '../../redux/todos-reducer';
+import _ from 'lodash';
+import {addingDates, onRefresh} from './Helpers';
+import 'moment/locale/ru';
 
-import {onRefresh} from './Helpers';
 const Todos = ({renderScreen}) => {
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getTodos());
+  }, [dispatch, getTodos]);
 
 
   const isRefreshing = useSelector(state => state.todos.isRefreshing) || false;
   const todos = useSelector(state => getSelectedTodos(state));
   const doneTodos = useSelector(state => getDoneTodos(state));
 
+  const sortedTodos = todos
+      ? _.sortBy(todos, todo => todo['created']).reverse()
+      : [];
 
-  useEffect(() => {
-    dispatch(getTodos());
-  }, [dispatch, getTodos]);
+  const sortedDoneTodos = doneTodos
+      ? _.sortBy(doneTodos, todo => todo['created']).reverse()
+      : [];
+
+  const sortedTodosWithDates = useMemo(() => {
+    if (sortedTodos) {
+     return addingDates(sortedTodos)
+    }
+  }, [sortedTodos, addingDates]);
+
+  const sortedDoneTodosWithDates = useMemo(() => {
+    if (sortedDoneTodos) {
+      return addingDates(sortedDoneTodos)
+    }
+  }, [sortedDoneTodos, addingDates]);
 
   if (!todos || !doneTodos) {
     return <View><Text>Ошибка получения данных с сервера</Text></View>;
@@ -31,10 +52,11 @@ const Todos = ({renderScreen}) => {
             refreshControl={
               <RefreshControl refreshing={isRefreshing} onRefresh={() => onRefresh(dispatch)}/>
             }
-            data={renderScreen === 'todos' ? todos : doneTodos}
+            data={renderScreen === 'todos' ? sortedTodosWithDates : sortedDoneTodosWithDates}
             renderItem={({item, index}) => (
 
                 <TodoItem todo={item.title} _id={item._id} isDone={item.isDone} editMode={item.editMode}
+                          date={item.date || null}
                           index={index} renderScreen={renderScreen}
                 />
             )}

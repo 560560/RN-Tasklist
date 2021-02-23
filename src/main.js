@@ -2,7 +2,7 @@ import {StatusBar} from 'expo-status-bar';
 import React, {useEffect} from 'react';
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
 import FooterContainer from './Components/Footer/FooterContainer';
-import {connect, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import TodosScreen from './Screens/TodosScreen';
 import ProfileScreen from './Screens/ProfileScreen';
 import Navbar from './Components/Navbar/Navbar';

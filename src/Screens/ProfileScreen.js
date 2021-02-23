@@ -6,23 +6,32 @@ import {getConnectionStatus} from '../redux/navbar-reducer';
 
 const ProfileScreen = () => {
   const dispatch = useDispatch();
-  const name = useSelector(state => state.authApp.name)
+  const name = useSelector(state => state.authApp.name);
 
   return (
       <View style={styles.container}>
-        <Text style={{color: '#000000'}}>
-           Страница профиля
-        </Text>
+        <View>
 
-        <Text style={{color: '#000000'}}>
-           Здравствуйте, {name ? name : "незнакомец"}!
-        </Text>
-        <Button
+          <Text style={{color: '#000000'}}>
+            Страница профиля
+          </Text>
+
+          <Text style={{color: '#000000'}}>
+            Здравствуйте, {name ? name : 'незнакомец'}!
+          </Text>
+
+        </View>
+
+
+        <View style={styles.logoutContainer}>
+          <Button
             title="Выход"
             onPress={() => {
               dispatch(setAuthKey(null));
               dispatch(getConnectionStatus());
             }}/>
+        </View>
+
       </View>
   );
 };
@@ -31,8 +40,13 @@ const styles = StyleSheet.create({
 
   container: {
     flex: 1,
-    padding: 15,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    padding: 50,
   },
+  logoutContainer: {
+    marginBottom: 20,
+  } ,
 
 });
 

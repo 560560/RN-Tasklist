@@ -2,8 +2,8 @@ import {infoAlert} from '../Common/allertsModal';
 import {navbarApi} from '../api/api';
 import {setScreenToShow} from './screens-reducer';
 
-const SET_APP_NAME = 'SET_APP_NAME';
-const APP_INITIALIZE = 'APP_INITIALIZE';
+const SET_APP_NAME = 'NAV_BAR_PANEL/SET_APP_NAME';
+const APP_INITIALIZE = 'NAV_BAR_PANEL/APP_INITIALIZE';
 
 const initialState = {
   appName: '',
