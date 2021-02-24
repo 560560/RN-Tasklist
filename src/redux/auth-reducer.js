@@ -1,5 +1,4 @@
 import {authApi} from '../api/api';
-import {getConnectionStatus} from './navbar-reducer';
 import {setScreenToShow} from './screens-reducer';
 
 const SET_AUTH_KEY = 'AUTH_APP/SET_AUTH_KEY';

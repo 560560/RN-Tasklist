@@ -8,8 +8,6 @@ import {checkTodo, editTodo, removeTodo, setEditMode} from '../../../redux/todos
 export const TodoItem = ({todo, _id, isDone, date, editMode, index, renderScreen}) => {
   const dispatch = useDispatch();
   const [value, setValue] = useState(todo);
-  const todosQuantity = useSelector(state => getSelectedTodos(state).length);
-  const doneTodosQuantity = useSelector(state => getDoneTodos(state).length);
   const todoUnderEdit = useSelector(state => state.todoUnderEdit);
   const isLoading = useSelector(state => state.isLoading);
 

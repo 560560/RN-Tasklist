@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo} from 'react';
-import {FlatList, View, StyleSheet, RefreshControl, Text} from 'react-native';
+import {FlatList, View, StyleSheet, RefreshControl, ActivityIndicator} from 'react-native';
 import {TodoItem} from './TodoItem/TodoItem';
 import {useDispatch, useSelector} from 'react-redux';
 import {getDoneTodos, getSelectedTodos} from '../../redux/todosSelectors';
@@ -31,18 +31,22 @@ const Todos = ({renderScreen}) => {
 
   const sortedTodosWithDates = useMemo(() => {
     if (sortedTodos) {
-     return addingDates(sortedTodos)
+      return addingDates(sortedTodos);
     }
   }, [sortedTodos, addingDates]);
 
   const sortedDoneTodosWithDates = useMemo(() => {
     if (sortedDoneTodos) {
-      return addingDates(sortedDoneTodos)
+      return addingDates(sortedDoneTodos);
     }
   }, [sortedDoneTodos, addingDates]);
 
   if (!todos || !doneTodos) {
-    return <View><Text>Ошибка получения данных с сервера</Text></View>;
+    return (
+        <View style={[styles.container, styles.horizontal]}>
+          <ActivityIndicator size="large" color="#1334a9"/>
+        </View>
+    );
   }
 
   return (
@@ -69,6 +73,14 @@ let styles = StyleSheet.create({
       todosWrapper: {
         flex: 1,
         paddingBottom: 35,
+      },
+      container: {
+        flex: 1,
+        justifyContent: 'center',
+      },
+      horizontal: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
       },
     },
 );
