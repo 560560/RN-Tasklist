@@ -20,15 +20,16 @@ const TodosScreen = ({renderScreen}) => {
 const styles = StyleSheet.create({
     
     container: {
-        flex: 1,
-        padding: 15,
+        flex: 1
     },
     titleWrapper: {
         flex: 1,
         maxHeight: 40,
         borderBottomWidth: 2,
         borderBottomColor: "#1334a9",
-        marginBottom: 10
+        marginBottom: 10,
+        marginHorizontal: 15,
+        marginTop: 10,
     },
 
     title : {

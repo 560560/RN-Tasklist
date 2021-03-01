@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, TouchableWithoutFeedback, TouchableOpacity, Alert, TextInput} from 'react-native';
+import {StyleSheet, Text, View, TouchableNativeFeedback, TouchableOpacity, Alert, TextInput} from 'react-native';
 import {MaterialIcons} from '@expo/vector-icons';
 import {useDispatch, useSelector} from 'react-redux';
-import {getDoneTodos, getSelectedTodos} from '../../../redux/todosSelectors';
 import {checkTodo, editTodo, removeTodo, setEditMode} from '../../../redux/todos-reducer';
+import {} from 'react-native-web';
+import moment from 'moment';
 
-export const TodoItem = ({todo, _id, isDone, date, editMode, index, renderScreen}) => {
+export const TodoItem = ({todo, _id, isDone, date, editMode}) => {
   const dispatch = useDispatch();
   const [value, setValue] = useState(todo);
   const todoUnderEdit = useSelector(state => state.todoUnderEdit);
@@ -83,11 +84,15 @@ export const TodoItem = ({todo, _id, isDone, date, editMode, index, renderScreen
 
   };
 
+  const currentDate =  moment(Date.now()).format('DD MMMM YYYY')
+
   return (
-      <View >
-        {date && <Text style={styles.separator}>{date}</Text>}
-        <TouchableWithoutFeedback onPress={() => !editMode && !isLoading && checkTodoHandler(_id, !isDone)}
-                                  onLongPress={() => !todoUnderEdit && setEditModeHandler(_id, true)}>
+      <View>
+        {date && <Text style={styles.separator}>{date === currentDate ? "Сегодня" : date}</Text>}
+        <TouchableNativeFeedback  onPress={() => !editMode && !isLoading && checkTodoHandler(_id, !isDone)}
+                                  onLongPress={() => !todoUnderEdit && setEditModeHandler(_id, true)}
+
+        >
           {editMode
               ? <View style={styles.wrapper}>
                 <TouchableOpacity onPress={cancelChanges}>
@@ -117,7 +122,7 @@ export const TodoItem = ({todo, _id, isDone, date, editMode, index, renderScreen
                 </TouchableOpacity>
               </View>
           }
-        </TouchableWithoutFeedback>
+        </TouchableNativeFeedback>
       </View>
   );
 };
@@ -127,12 +132,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 5,
+    paddingVertical: 7,
     paddingLeft: 10,
-    marginVertical: 7,
+    marginBottom: 14,
     color: '#969696',
-    backgroundColor: '#efefef',
-    borderRadius: 3
+    backgroundColor: '#ffffff',
+    borderRadius: 7,
+    marginHorizontal: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+    elevation: 6,
+    borderWidth: 1,
+    borderColor: `rgba(19, 52, 169, 0.22)`
   },
   todoItem: {
     paddingVertical: 5,

@@ -4,7 +4,6 @@ import {TodoItem} from './TodoItem/TodoItem';
 import {useDispatch, useSelector} from 'react-redux';
 import {getDoneTodos, getSelectedTodos} from '../../redux/todosSelectors';
 import {getTodos} from '../../redux/todos-reducer';
-import _ from 'lodash';
 import {addingDates, onRefresh} from './Helpers';
 import 'moment/locale/ru';
 
@@ -21,25 +20,18 @@ const Todos = ({renderScreen}) => {
   const todos = useSelector(state => getSelectedTodos(state));
   const doneTodos = useSelector(state => getDoneTodos(state));
 
-  const sortedTodos = todos
-      ? _.sortBy(todos, todo => todo['created']).reverse()
-      : [];
-
-  const sortedDoneTodos = doneTodos
-      ? _.sortBy(doneTodos, todo => todo['created']).reverse()
-      : [];
-
   const sortedTodosWithDates = useMemo(() => {
-    if (sortedTodos) {
-      return addingDates(sortedTodos);
+    if (todos) {
+      return addingDates(todos);
     }
-  }, [sortedTodos, addingDates]);
+  }, [todos, addingDates]);
 
   const sortedDoneTodosWithDates = useMemo(() => {
-    if (sortedDoneTodos) {
-      return addingDates(sortedDoneTodos);
+    if (doneTodos) {
+      return addingDates(doneTodos);
     }
-  }, [sortedDoneTodos, addingDates]);
+  }, [doneTodos, addingDates]);
+
 
   if (!todos || !doneTodos) {
     return (
@@ -72,7 +64,7 @@ const Todos = ({renderScreen}) => {
 let styles = StyleSheet.create({
       todosWrapper: {
         flex: 1,
-        paddingBottom: 35,
+        paddingBottom: 47,
       },
       container: {
         flex: 1,
