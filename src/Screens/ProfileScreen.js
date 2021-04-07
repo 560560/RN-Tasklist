@@ -2,7 +2,6 @@ import React from 'react';
 import {View, Text, StyleSheet, Button} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {setAuthKey} from '../redux/auth-reducer';
-import {getConnectionStatus} from '../redux/navbar-reducer';
 
 const ProfileScreen = () => {
   const dispatch = useDispatch();
@@ -25,11 +24,11 @@ const ProfileScreen = () => {
 
         <View style={styles.logoutContainer}>
           <Button
-            title="Выход"
-            onPress={() => {
-              dispatch(setAuthKey(null));
-              dispatch(getConnectionStatus());
-            }}/>
+              title="Выход"
+              onPress={() => {
+                dispatch(setAuthKey(null));
+                dispatch(getConnectionStatus());
+              }}/>
         </View>
 
       </View>
@@ -42,11 +41,13 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'space-between',
-    padding: 50,
+
+    paddingTop: 80,
+    paddingHorizontal: 50,
   },
   logoutContainer: {
     marginBottom: 20,
-  } ,
+  },
 
 });
 

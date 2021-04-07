@@ -64,7 +64,7 @@ const Todos = ({renderScreen}) => {
 let styles = StyleSheet.create({
       todosWrapper: {
         flex: 1,
-        paddingBottom: 47,
+
       },
       container: {
         flex: 1,

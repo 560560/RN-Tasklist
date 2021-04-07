@@ -8,7 +8,7 @@ const SET_NAME = 'AUTH_APP/SET_NAME';
 const SET_ERROR = 'AUTH_APP/SET_ERROR';
 const SET_SIGN_UP_STATUS = 'AUTH_APP/SET_SIGN_UP_STATUS';
 const SET_IS_LOADING = 'AUTH_APP/SET_IS_LOADING';
-
+const SET_SOCKET_CONNECTION_STATUS = 'SET_SOCKET_CONNECTION_STATUS'
 
 const initialState = {
   authKey: null,
@@ -17,6 +17,7 @@ const initialState = {
   authError: null,
   signUpStatus: null,
   name: null,
+  setSocketConnectionStatus: null,
 };
 
 const authReducer = (state = initialState, action) => {
@@ -62,6 +63,13 @@ const authReducer = (state = initialState, action) => {
         ...state,
         isLoading: action.loadingStatus,
       };
+
+    case SET_SOCKET_CONNECTION_STATUS:
+      return {
+        ...state,
+        setSocketConnectionStatus: action.status,
+      }
+
     default:
       return state;
 
@@ -124,6 +132,14 @@ const setIsLoading = (loadingStatus) => {
     loadingStatus,
   };
 };
+
+
+export const setSocketConnectionStatus = (status) => {
+  return {
+    type: SET_SOCKET_CONNECTION_STATUS,
+    status
+  }
+}
 
 export const logIn = (email, pass, saveMe = false) => async (dispatch) => {
   dispatch(setIsLoading(true));

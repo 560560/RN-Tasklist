@@ -49,11 +49,22 @@ const todosReducer = (state = initialState, action) => {
         todoUnderEdit: action.value ? action._id : null,
       };
 
+/*    case SET_NEW_TODO:
+      if (state.todos.map(todo => todo._id).includes(action.savedTodo._id)) {
+        return state;
+      } else {
+        return {
+          ...state,
+          todos: [action.savedTodo, ...state.todos],
+        };
+      }*/
+
     case SET_NEW_TODO:
-      return {
-        ...state,
-        todos: [action.savedTodo, ...state.todos],
-      };
+        return {
+          ...state,
+          todos: [action.savedTodo, ...state.todos],
+        };
+
 
     case SET_TODOS:
       return {
@@ -118,7 +129,7 @@ const setTodos = (todos) => {
   };
 };
 
-const setNewTodo = (savedTodo) => {
+export const setNewTodo = (savedTodo) => {
   return {
     type: SET_NEW_TODO,
     savedTodo,
@@ -179,9 +190,6 @@ export const addTodo = (title) => async (dispatch, getState) => {
     dispatch(getConnectionStatus());
     const authKey = getState().authApp.authKey;
     const response = await todosApi.addTodoWithAPI(title, authKey);
-    if (response.status === 200 && response.data.status === 'Created') {
-      dispatch(setNewTodo(response.data.savedTodo));
-    }
   } catch (e) {
     infoAlert('Ответ от сервера:', 'Ошибка выполнения запроса');
   }

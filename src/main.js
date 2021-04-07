@@ -12,9 +12,7 @@ import {getConnectionStatus} from './redux/navbar-reducer';
 
 const Main = () => {
   const dispatch = useDispatch();
-
   const screenToShow = useSelector(state => state.screens.screenToShow);
-
   const appInitializeStatus = useSelector(state => state.navbarPanel.appInitialized);
 
   useEffect(() => {

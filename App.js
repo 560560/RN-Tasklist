@@ -1,6 +1,6 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import Main from './src/main';
-import {Provider} from 'react-redux';
+import {Provider, useSelector} from 'react-redux';
 import {store, persistor} from './src/redux/redux-store';
 import {PersistGate} from 'redux-persist/integration/react';
 import {View, ActivityIndicator} from 'react-native';
