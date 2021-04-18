@@ -1,42 +1,42 @@
-import React from 'react';
-import Todos from "../Components/Todos/Todos";
-import {StyleSheet, View, Text} from "react-native";
+import React, {useEffect} from 'react';
+import Todos from '../Components/Todos/Todos';
+import {StyleSheet, View, Text} from 'react-native';
 import {TodoInput} from '../Components/TodoInput/TodoInput';
 
-
 const TodosScreen = ({renderScreen}) => {
-    return (
-        <View style={styles.container}>
-            {renderScreen === "todos"
-                ? <TodoInput/>
-                : <View style={styles.titleWrapper}>
-                    <Text  style={styles.title}>Выполненные задачи</Text>
-                </View>}
-            <Todos renderScreen={renderScreen}/>
-        </View>
-    );
-}
+
+  return (
+      <View style={styles.container}>
+        <Todos renderScreen={renderScreen}/>
+        {renderScreen === 'todos'
+            ? <TodoInput/>
+            : <View style={styles.titleWrapper}>
+              <Text style={styles.title}>Выполненные задачи</Text>
+            </View>}
+      </View>
+  );
+};
 
 const styles = StyleSheet.create({
-    
-    container: {
-        flex: 1
-    },
-    titleWrapper: {
-        flex: 1,
-        maxHeight: 40,
-        borderBottomWidth: 2,
-        borderBottomColor: "#1334a9",
-        marginBottom: 10,
-        marginHorizontal: 15,
-        marginTop: 10,
-    },
 
-    title : {
-        textAlign: "center",
-        fontSize: 22
-    }
+  container: {
+    flex: 1,
+    marginTop: 60,
+  },
+  titleWrapper: {
+    flex: 1,
+    maxHeight: 40,
+    borderTopWidth: 1,
+    borderTopColor: '#d2d2d2',
+    paddingTop: 20,
+    marginBottom: 30,
+  },
 
-})
+  title: {
+    textAlign: 'center',
+    fontSize: 22,
+  },
+
+});
 
 export default TodosScreen;

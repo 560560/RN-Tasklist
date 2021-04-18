@@ -3,7 +3,7 @@ import {FlatList, View, StyleSheet, RefreshControl, ActivityIndicator} from 'rea
 import {TodoItem} from './TodoItem/TodoItem';
 import {useDispatch, useSelector} from 'react-redux';
 import {getDoneTodos, getSelectedTodos} from '../../redux/todosSelectors';
-import {getTodos} from '../../redux/todos-reducer';
+import {autoGetTodos, getTodos} from '../../redux/todos-reducer';
 import {addingDates, onRefresh} from './Helpers';
 import 'moment/locale/ru';
 
@@ -14,6 +14,12 @@ const Todos = ({renderScreen}) => {
   useEffect(() => {
     dispatch(getTodos());
   }, [dispatch, getTodos]);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      dispatch(autoGetTodos())}, 5000)
+    return () => clearInterval(intervalId);
+  }, [])
 
 
   const isRefreshing = useSelector(state => state.todos.isRefreshing) || false;
@@ -64,7 +70,6 @@ const Todos = ({renderScreen}) => {
 let styles = StyleSheet.create({
       todosWrapper: {
         flex: 1,
-        paddingBottom: 47,
       },
       container: {
         flex: 1,

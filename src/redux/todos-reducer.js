@@ -12,6 +12,7 @@ const EDIT_TODO = 'TODOS/EDIT_TODO';
 const SET_REFRESHING = 'TODOS/SET_REFRESHING';
 const SET_EDIT_MODE = 'TODOS/SET_EDIT_MODE';
 const SET_SHOW_DONE_TASKS = 'TODOS/SET_SHOW_DONE_TASKS';
+const SET_ERROR_CONNECTION_COUNTER = 'TODOS/SET_ERROR_CONNECTION_COUNTER';
 
 const initialState = {
   todos: null,
@@ -19,6 +20,7 @@ const initialState = {
   isRefreshing: false,
   todoUnderEdit: null,
   showDoneTasks: true,
+  errorConnectionCounter: 0,
 };
 
 const instance = axios.create({
@@ -90,7 +92,11 @@ const todosReducer = (state = initialState, action) => {
         ...state,
         showDoneTasks: action.newValue,
       };
-
+    case SET_ERROR_CONNECTION_COUNTER:
+      return {
+        ...state,
+        errorConnectionCounter: action.counter
+      }
     default:
       return state;
   }
@@ -139,6 +145,13 @@ const deleteTodo = (_id) => {
   };
 };
 
+const setErrorCounter = (counter) => {
+  return {
+    type: SET_ERROR_CONNECTION_COUNTER,
+    counter,
+  };
+};
+
 export const setRefreshing = (status) => {
   return {
     type: SET_REFRESHING,
@@ -153,19 +166,45 @@ export const setShowDoneTasks = (newValue) => {
   };
 };
 
+
+//thunk-creator Синхронизации списка Задач с БД раз в 5 сек.
+export const autoGetTodos = () => async (dispatch, getState) => {
+  if(getState().todos.errorConnectionCounter >= 0 && getState().todos.errorConnectionCounter < 3) {
+    try {
+      dispatch(getConnectionStatus());
+      const authKey = getState().authApp.authKey;
+      const response = await todosApi.getTodosWithAPI(authKey);
+      if (response.status === 200 && response.data.status === 'Loaded') {
+        dispatch(setTodos(response.data.todos));
+      } else if (response.status === 200 && response.data.status === 'Auth Fail') {
+        dispatch(setAuthKey(null));
+      }
+      setErrorCounter(0)
+    } catch (e) {
+      setErrorCounter(++getState().todos.errorConnectionCounter)
+      infoAlert('Нет ответа от сервера:', 'Проверьте связь');
+    }
+
+  }
+
+};
+
+
 //thunk-creator Получение списка заданий
 export const getTodos = () => async (dispatch, getState) => {
   dispatch(setIsLoading(true));
   try {
-    dispatch(getConnectionStatus());
-    const authKey = getState().authApp.authKey;
-    const response = await todosApi.getTodosWithAPI(authKey);
-    if (response.status === 200 && response.data.status === 'Loaded') {
-      dispatch(setTodos(response.data.todos));
-    } else if (response.status === 200 && response.data.status === 'Auth Fail') {
-      dispatch(setAuthKey(null));
-    }
-  } catch (e) {
+      dispatch(getConnectionStatus());
+      const authKey = getState().authApp.authKey;
+      const response = await todosApi.getTodosWithAPI(authKey);
+      if (response.status === 200 && response.data.status === 'Loaded') {
+        dispatch(setTodos(response.data.todos));
+      } else if (response.status === 200 && response.data.status === 'Auth Fail') {
+        dispatch(setAuthKey(null));
+      }
+
+    } catch (e) {
+
     infoAlert('Ответ от сервера:', 'Ошибка выполнения запроса');
   }
   dispatch(setIsLoading(false));
