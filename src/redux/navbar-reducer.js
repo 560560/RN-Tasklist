@@ -52,7 +52,7 @@ const getAppName = () => async (dispatch) => {
   }
 };
 
-//thunk-creator статуса соединения с бэка
+//thunk-creator статуса соединения с бэком
 export const getConnectionStatus = () => async (dispatch, getState) => {
   try {
     const response = await navbarApi.getConnectionStatusWithAPI();
@@ -69,7 +69,7 @@ export const getConnectionStatus = () => async (dispatch, getState) => {
     }
 
   } catch (e) {
-    infoAlert('Ошибка запроса на сервер', 'Проверьте связь с сетью Интернет');
+    infoAlert('Ошибка запроса на сервер', `Проверьте связь с сетью Интернет: ${e}`);
     if (!getState().navbarPanel.appName) {
       dispatch(setAppName('НЕТ СВЯЗИ С СЕРВЕРОМ'));
     } else {

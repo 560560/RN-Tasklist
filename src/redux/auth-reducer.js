@@ -1,5 +1,5 @@
-import {authApi} from '../api/api';
-import {setScreenToShow} from './screens-reducer';
+import { authApi } from '../api/api';
+import { setScreenToShow } from './screens-reducer';
 
 const SET_AUTH_KEY = 'AUTH_APP/SET_AUTH_KEY';
 const SET_EMAIL = 'AUTH_APP/SET_EMAIL';
@@ -8,7 +8,6 @@ const SET_NAME = 'AUTH_APP/SET_NAME';
 const SET_ERROR = 'AUTH_APP/SET_ERROR';
 const SET_SIGN_UP_STATUS = 'AUTH_APP/SET_SIGN_UP_STATUS';
 const SET_IS_LOADING = 'AUTH_APP/SET_IS_LOADING';
-
 
 const initialState = {
   authKey: null,
@@ -64,8 +63,6 @@ const authReducer = (state = initialState, action) => {
       };
     default:
       return state;
-
-
   }
 };
 
@@ -73,21 +70,18 @@ const authReducer = (state = initialState, action) => {
 export const setAuthKey = (authKey) => ({
   type: SET_AUTH_KEY,
   authKey,
-
 });
 
 //action creater добавления в стейт login
 const setEmail = (email) => ({
   type: SET_EMAIL,
   email,
-
 });
 
 //action creater добавления в стейт name
 const setName = (name) => ({
   type: SET_NAME,
   name,
-
 });
 
 //action creater добавления в стейт pass
@@ -103,18 +97,20 @@ export const setAuthError = (error) => {
     'No user': 'Пользователя с таким e-mail не существует.',
   };
   return {
-    type: SET_ERROR, error: errors[error],
+    type: SET_ERROR,
+    error: errors[error],
   };
 };
 
 //action creater добавления в стейт статуса попытки регистрации
 export const setSignUpStatus = (signUpStatus) => {
   const statuses = {
-    'Created': {success: true, message: 'Успешная регистрация. Теперь можно авторизоваться. '},
-    'Already exist': {success: false, message: 'Пользователь с таким e-mail уже существует.'},
+    Created: { success: true, message: 'Успешная регистрация. Теперь можно авторизоваться. ' },
+    'Already exist': { success: false, message: 'Пользователь с таким e-mail уже существует.' },
   };
   return {
-    type: SET_SIGN_UP_STATUS, signUpStatus: statuses[signUpStatus],
+    type: SET_SIGN_UP_STATUS,
+    signUpStatus: statuses[signUpStatus],
   };
 };
 
@@ -125,37 +121,35 @@ const setIsLoading = (loadingStatus) => {
   };
 };
 
-export const logIn = (email, pass, saveMe = false) => async (dispatch) => {
-  dispatch(setIsLoading(true));
-  try {
-    const response = await authApi.logInWithAPI(email, pass);
-    if (response.status === 200 && response.data.status === 'Authorize success') {
-      dispatch(setAuthKey(response.data.authKey));
-      dispatch(setName(response.data.name));
-      if (saveMe) {
-        dispatch(setEmail(email));
-        dispatch(setPass(pass));
+export const logIn =
+  (email, pass, saveMe = false) =>
+  async (dispatch) => {
+    dispatch(setIsLoading(true));
+    try {
+      const response = await authApi.logInWithAPI(email, pass);
+      if (response.status === 200 && response.data.status === 'Authorize success') {
+        dispatch(setAuthKey(response.data.authKey));
+        dispatch(setName(response.data.name));
+        if (saveMe) {
+          dispatch(setEmail(email));
+          dispatch(setPass(pass));
+        }
+        dispatch(dispatch(setScreenToShow('todos')));
+      } else if (response.status === 200 && response.data.status !== 'Authorize success') {
+        dispatch(setAuthError(response.data.status));
       }
-      dispatch(dispatch(setScreenToShow('todos')));
-    } else if (response.status === 200 && response.data.status !== 'Authorize success') {
-      dispatch(setAuthError(response.data.status));
+    } catch (err) {
+      console.error(err);
     }
-
-  } catch (err) {
-    console.error(err);
-  }
-  dispatch(setIsLoading(false));
-};
+    dispatch(setIsLoading(false));
+  };
 
 export const signUpUser = (name, email, pass) => async (dispatch) => {
   dispatch(setIsLoading(true));
   try {
-    console.log("name = ", name)
-    console.log("email = ", email)
-    console.log("pass = ", pass)
     const response = await authApi.signUpUserWithAPI(name, email, pass);
     if (response.status === 200 && response.data.status) {
-      dispatch(setSignUpStatus(response.data.status))
+      dispatch(setSignUpStatus(response.data.status));
     }
   } catch (err) {
     console.error(err);
@@ -163,6 +157,5 @@ export const signUpUser = (name, email, pass) => async (dispatch) => {
 
   dispatch(setIsLoading(false));
 };
-
 
 export default authReducer;

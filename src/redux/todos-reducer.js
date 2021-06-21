@@ -1,8 +1,8 @@
 import * as axios from 'axios';
-import {getConnectionStatus} from './navbar-reducer';
-import {todosApi} from '../api/api';
-import {infoAlert} from '../Common/allertsModal';
-import {setAuthKey} from './auth-reducer';
+import { getConnectionStatus } from './navbar-reducer';
+import { todosApi } from '../api/api';
+import { infoAlert } from '../Common/allertsModal';
+import { setAuthKey } from './auth-reducer';
 
 const SET_IS_LOADING = 'TODOS/SET_IS_LOADING';
 const SET_NEW_TODO = 'TODOS/SET_NEW_TODO';
@@ -23,14 +23,8 @@ const initialState = {
   errorConnectionCounter: 0,
 };
 
-const instance = axios.create({
-  baseURL: 'http://agro-api.site:4000/',
-  headers: {'Content-Type': 'application/json'},
-});
-
 const todosReducer = (state = initialState, action) => {
   switch (action.type) {
-
     case SET_IS_LOADING:
       return {
         ...state,
@@ -40,7 +34,7 @@ const todosReducer = (state = initialState, action) => {
     case SET_EDIT_MODE:
       return {
         ...state,
-        todos: [...state.todos].map(todo => {
+        todos: [...state.todos].map((todo) => {
           if (todo._id === action._id) {
             todo.editMode = action.value;
             return todo;
@@ -66,13 +60,13 @@ const todosReducer = (state = initialState, action) => {
     case DELETE_TODO:
       return {
         ...state,
-        todos: [...state.todos].filter(todo => todo._id !== action._id),
+        todos: [...state.todos].filter((todo) => todo._id !== action._id),
       };
 
-    case  EDIT_TODO:
+    case EDIT_TODO:
       return {
         ...state,
-        todos: [...state.todos].map(todo => {
+        todos: [...state.todos].map((todo) => {
           if (todo._id === action.todo._id) {
             return action.todo;
           } else {
@@ -95,8 +89,8 @@ const todosReducer = (state = initialState, action) => {
     case SET_ERROR_CONNECTION_COUNTER:
       return {
         ...state,
-        errorConnectionCounter: action.counter
-      }
+        errorConnectionCounter: action.counter,
+      };
     default:
       return state;
   }
@@ -166,49 +160,51 @@ export const setShowDoneTasks = (newValue) => {
   };
 };
 
-
 //thunk-creator Синхронизации списка Задач с БД раз в 5 сек.
 export const autoGetTodos = () => async (dispatch, getState) => {
-  if(getState().todos.errorConnectionCounter >= 0 && getState().todos.errorConnectionCounter < 3) {
+  if (
+    getState().todos.errorConnectionCounter >= 0 &&
+    getState().todos.errorConnectionCounter < 3
+  ) {
     try {
       dispatch(getConnectionStatus());
       const authKey = getState().authApp.authKey;
       const response = await todosApi.getTodosWithAPI(authKey);
       if (response.status === 200 && response.data.status === 'Loaded') {
         dispatch(setTodos(response.data.todos));
-      } else if (response.status === 200 && response.data.status === 'Auth Fail') {
+      } else if (
+        response.status === 200 &&
+        response.data.status === 'Auth Fail'
+      ) {
         dispatch(setAuthKey(null));
       }
-      setErrorCounter(0)
+      setErrorCounter(0);
     } catch (e) {
-      setErrorCounter(++getState().todos.errorConnectionCounter)
+      setErrorCounter(++getState().todos.errorConnectionCounter);
       infoAlert('Нет ответа от сервера:', 'Проверьте связь');
     }
-
   }
-
 };
-
 
 //thunk-creator Получение списка заданий
 export const getTodos = () => async (dispatch, getState) => {
   dispatch(setIsLoading(true));
   try {
-      dispatch(getConnectionStatus());
-      const authKey = getState().authApp.authKey;
-      const response = await todosApi.getTodosWithAPI(authKey);
-      if (response.status === 200 && response.data.status === 'Loaded') {
-        dispatch(setTodos(response.data.todos));
-      } else if (response.status === 200 && response.data.status === 'Auth Fail') {
-        dispatch(setAuthKey(null));
-      }
-
-    } catch (e) {
-
+    dispatch(getConnectionStatus());
+    const authKey = getState().authApp.authKey;
+    const response = await todosApi.getTodosWithAPI(authKey);
+    if (response.status === 200 && response.data.status === 'Loaded') {
+      dispatch(setTodos(response.data.todos));
+    } else if (
+      response.status === 200 &&
+      response.data.status === 'Auth Fail'
+    ) {
+      dispatch(setAuthKey(null));
+    }
+  } catch (e) {
     infoAlert('Ответ от сервера:', 'Ошибка выполнения запроса');
   }
   dispatch(setIsLoading(false));
-
 };
 
 //thunk-creator Добавление нового задания
@@ -236,11 +232,12 @@ export const editTodo = (_id, newTitle) => async (dispatch, getState) => {
     const response = await todosApi.editTodoWithAPI(_id, newTitle, authKey);
     if (response.status === 200 && response.data.status === 'Modified') {
       dispatch(setEditedTodo(response.data.modifidedTodo));
-
     } else if (response.status === 200 && response.data.status === 'Empty id') {
       infoAlert('Ответ от сервера:', ' id не передан');
-
-    } else if (response.status === 200 && response.data.status === 'Empty authKey') {
+    } else if (
+      response.status === 200 &&
+      response.data.status === 'Empty authKey'
+    ) {
       infoAlert('Ответ от сервера:', 'authKey не передан');
     }
   } catch (e) {
