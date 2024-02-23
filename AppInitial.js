@@ -6,9 +6,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { Main } from './src/main';
 import { persistor, store } from './src/redux/store';
 
-console.reportErrorsAsExceptions = false;
-
-const App = () => {
+export default function App() {
   const renderLoading = () => (
     <View>
       <ActivityIndicator size="large" />
@@ -22,6 +20,4 @@ const App = () => {
       </PersistGate>
     </Provider>
   );
-};
-
-export default App;
+}
