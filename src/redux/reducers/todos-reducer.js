@@ -1,8 +1,8 @@
 import { todosApi } from '../../api/api';
 import { infoAlert } from '../../common/allertsModal';
+import { AppScreen } from '../../helpers/constants';
 import { setAuthKey } from './auth-reducer';
 import { getConnectionStatus } from './navbar-reducer';
-import { AppScreen } from '../../helpers/constants';
 
 const ServerResponseStatus = {
   CREATED: 'Created',
@@ -71,7 +71,6 @@ const todosReducer = (state = initialState, action) => {
       };
 
     case SET_NEW_TODO:
-      console.log('todosSource = ', todosSource);
       return {
         ...state,
         [todosSource]: [action.newTodo, ...state.todos],
@@ -320,7 +319,11 @@ export const toggleTodoStatus = (id, done, renderScreen) => async (dispatch, get
     const response = await todosApi.checkTodoWithAPI(id, done, authKey);
     if (response.status === 200 && response.data.status === ServerResponseStatus.MODIFIED) {
       dispatch(deleteTodo(response.data.todos[0].id, renderScreen));
-      renderScreen === AppScreen.DONE_TODOS ? dispatch(getTodos()) : dispatch(getDoneTodos());
+      if (renderScreen === AppScreen.DONE_TODOS) {
+        dispatch(getTodos());
+      } else {
+        dispatch(getDoneTodos());
+      }
     }
   } catch (e) {
     serverErrorAlert();

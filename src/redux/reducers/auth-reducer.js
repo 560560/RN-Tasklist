@@ -1,9 +1,8 @@
 import { authApi } from '../../api/api';
+import { AppScreen } from '../../helpers/constants';
 import { setScreenToShow } from './screens-reducer';
 
 const SET_AUTH_KEY = 'AUTH_APP/SET_AUTH_KEY';
-const SET_EMAIL = 'AUTH_APP/SET_EMAIL';
-const SET_PASS = 'AUTH_APP/SET_PASS';
 const SET_NAME = 'AUTH_APP/SET_NAME';
 const SET_ERROR = 'AUTH_APP/SET_ERROR';
 const SET_SIGN_UP_STATUS = 'AUTH_APP/SET_SIGN_UP_STATUS';
@@ -26,22 +25,10 @@ const authReducer = (state = initialState, action) => {
         authKey: action.authKey,
       };
 
-    case SET_EMAIL:
-      return {
-        ...state,
-        email: action.email,
-      };
-
     case SET_NAME:
       return {
         ...state,
         name: action.name,
-      };
-
-    case SET_PASS:
-      return {
-        ...state,
-        pass: action.pass,
       };
 
     case SET_ERROR:
@@ -72,22 +59,10 @@ export const setAuthKey = (authKey) => ({
   authKey,
 });
 
-// action creator добавления в стейт login
-const setEmail = (email) => ({
-  type: SET_EMAIL,
-  email,
-});
-
 // action creator добавления в стейт name
 const setName = (name) => ({
   type: SET_NAME,
   name,
-});
-
-// action creator добавления в стейт pass
-const setPass = (pass) => ({
-  type: SET_PASS,
-  pass,
 });
 
 // action creator добавления в стейт Ошибки с бэка
@@ -127,12 +102,10 @@ export const logIn = (email, pass, resetForm) => async (dispatch) => {
       dispatch(setAuthKey(response.data.authKey));
       dispatch(setName(response.data.name));
       resetForm();
-      dispatch(dispatch(setScreenToShow('todos')));
+      dispatch(dispatch(setScreenToShow(AppScreen.UNDONE_TODOS)));
     } else if (response.status === 200 && response.data.status !== 'Authorize success') {
       dispatch(setAuthError(response.data.status));
     }
-  } catch (err) {
-    console.error(err);
   } finally {
     dispatch(setIsLoading(false));
   }
@@ -146,8 +119,6 @@ export const signUpUser = (name, email, pass, resetForm) => async (dispatch) => 
       dispatch(setSignUpStatus(response.data.status));
       resetForm();
     }
-  } catch (err) {
-    console.error(err);
   } finally {
     dispatch(setIsLoading(false));
   }

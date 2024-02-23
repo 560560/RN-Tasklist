@@ -1,4 +1,5 @@
 import { navbarApi } from '../../api/api';
+import { AppScreen } from '../../helpers/constants';
 import { setScreenToShow } from './screens-reducer';
 
 const APP_INITIALIZE = 'NAV_BAR_PANEL/APP_INITIALIZE';
@@ -65,7 +66,7 @@ export const getConnectionStatus = () => async (dispatch, getState) => {
       dispatch(getAppName());
       dispatch(setConnectionStatus(true));
       if (!getState().authApp.authKey) {
-        dispatch(setScreenToShow('login'));
+        dispatch(setScreenToShow(AppScreen.LOGIN));
       }
       if (!getState().navbarPanel.appInitialized) {
         dispatch(setAppInitialize());
