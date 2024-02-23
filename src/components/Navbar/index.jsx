@@ -1,4 +1,4 @@
-import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 import { isEqual } from 'lodash';
 import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -80,23 +80,23 @@ export const Navbar = () => {
   return (
     <View style={styles.navTab}>
       <TouchableOpacity onPress={() => onPressTasksHandler()}>
-        <FontAwesome5
-          name="clipboard-list"
-          size={40}
+        <FontAwesome
+          name="square-o"
+          size={45}
           color={currentScreen === AppScreen.UNDONE_TODOS ? mainColor : iconInactiveColor}
         />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => onPressDoneTasksHandler()}>
-        <FontAwesome5
-          name="tasks"
-          size={38}
+        <FontAwesome
+          name="check-square-o"
+          size={45}
           color={currentScreen === AppScreen.DONE_TODOS ? mainColor : iconInactiveColor}
         />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => onPressProfileHandler()}>
-        <MaterialIcons
-          name="account-circle"
-          size={45}
+        <FontAwesome
+          name="user-o"
+          size={39}
           color={currentScreen === AppScreen.PROFILE ? mainColor : iconInactiveColor}
         />
       </TouchableOpacity>

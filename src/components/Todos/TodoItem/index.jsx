@@ -1,4 +1,4 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import { isEqual } from 'lodash';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
@@ -14,7 +14,6 @@ import { useSelector } from 'react-redux';
 import { hexToRgbA } from '../../../helpers/hexToRgba';
 import { useSchemeColors } from '../../../helpers/useSchemeColors';
 import { useGetHelpers } from './hooks/useGetHelpers';
-import { AppScreen } from '../../../helpers/constants';
 
 export const TodoItem = React.memo(({ todo, id, done, date, editMode, renderScreen }) => {
   const [todoNewTitle, setTodoNewTitle] = useState(todo);
@@ -102,11 +101,6 @@ export const TodoItem = React.memo(({ todo, id, done, date, editMode, renderScre
       marginTop: 25,
       paddingVertical: 10,
     },
-    title: {
-      maxWidth: '73%',
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
   });
 
   const onPress = useCallback(() => {
@@ -118,8 +112,10 @@ export const TodoItem = React.memo(({ todo, id, done, date, editMode, renderScre
       return;
     }
 
-    !todoUnderEdit && setEditModeHandler(id, true);
-  }, [done, todoUnderEdit]);
+    if (!todoUnderEdit) {
+      setEditModeHandler(id, true);
+    }
+  }, [done, id, setEditModeHandler, todoUnderEdit]);
 
   const editModeContent = useMemo(
     () => (
@@ -144,7 +140,15 @@ export const TodoItem = React.memo(({ todo, id, done, date, editMode, renderScre
         </TouchableOpacity>
       </View>
     ),
-    [onCancelChangesHandler, styles, todoNewTitle]
+    [
+      applyChanges,
+      onCancelChangesHandler,
+      styles.cancelIcon,
+      styles.inputField,
+      styles.saveIcon,
+      styles.wrapper,
+      todoNewTitle,
+    ]
   );
 
   return (
@@ -159,17 +163,9 @@ export const TodoItem = React.memo(({ todo, id, done, date, editMode, renderScre
           editModeContent
         ) : (
           <View style={[styles.wrapper]}>
-            <View style={[styles.title]}>
-              {done ? (
-                <MaterialCommunityIcons name="checkbox-outline" style={styles.doneIcon} />
-              ) : (
-                <MaterialCommunityIcons name="checkbox-blank-outline" style={styles.undoneIcon} />
-              )}
-              <Text style={StyleSheet.flatten([styles.todoItem])}>{todo}</Text>
-            </View>
-
+            <Text style={StyleSheet.flatten([styles.todoItem])}>{todo}</Text>
             <TouchableOpacity onPress={removeHandler}>
-              <MaterialCommunityIcons name="trash-can-outline" style={styles.deleteIcon} />
+              <FontAwesome name="trash-o" style={styles.deleteIcon} />
             </TouchableOpacity>
           </View>
         )}
