@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Список задач",
-    "slug": "TaskList",
+    "slug": "tasklist",
     "version": "1.9.5",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -29,8 +29,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "b825f21f-abe4-4f6f-bcfb-090e4f849329"
+        "projectId": "1383aa7b-1f82-4ad3-a52a-88eb8ce1c4a9"
       }
-    }
+    },
+    "owner": "samael831"
   }
 }
