@@ -2,7 +2,7 @@
   "expo": {
     "name": "Список задач",
     "slug": "TaskList",
-    "version": "1.9.4",
+    "version": "1.9.5",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -21,7 +21,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.samael831.TaskList"
     },
     "web": {
       "favicon": "./assets/favicon.png"

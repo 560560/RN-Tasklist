@@ -2,16 +2,18 @@ import 'moment/locale/ru';
 
 import { isEqual } from 'lodash';
 import React, { useEffect, useMemo } from 'react';
-import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { getSelectedUndoneTodos } from '../../../redux/selectors/todosSelectors';
-import { autoGetTodos, getTodos } from '../../../redux/reducers';
-import { addingDates, onRefresh } from '../helpers';
 
+import { useSchemeColors } from '../../../helpers/useSchemeColors';
+import { autoGetTodos, getTodos } from '../../../redux/reducers';
+import { getSelectedUndoneTodos } from '../../../redux/selectors/todosSelectors';
+import { addingDates, onRefresh } from '../helpers';
 import { TodoItem } from '../TodoItem';
 
 export const UndoneTodos = ({ renderScreen }) => {
   const dispatch = useDispatch();
+  const { mainColor } = useSchemeColors();
 
   useEffect(() => {
     dispatch(getTodos());
@@ -38,6 +40,44 @@ export const UndoneTodos = ({ renderScreen }) => {
     [undoneTodos]
   );
 
+  const styles = StyleSheet.create({
+    emptyTodosWrapper: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    todosWrapper: {
+      flex: 1,
+    },
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+    },
+    horizontal: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+    },
+    emptyStateTitleContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      marginVertical: 10,
+    },
+    titleContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      borderBottomColor: '#d2d2d2',
+      borderStyle: 'solid',
+      borderBottomWidth: 1,
+      paddingBottom: 10,
+    },
+    title: {
+      fontSize: 19,
+      fontWeight: 'bold',
+      color: mainColor,
+    },
+  });
+
   if (!undoneTodos) {
     return (
       <View style={[styles.container, styles.horizontal]}>
@@ -46,8 +86,21 @@ export const UndoneTodos = ({ renderScreen }) => {
     );
   }
 
+  if (!sortedUndoneTodosWithDates.length) {
+    return (
+      <View style={styles.emptyTodosWrapper}>
+        <View style={styles.emptyStateTitleContainer}>
+          <Text style={styles.title}>Нет запланированных задач</Text>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.todosWrapper}>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>Запланированные задачи</Text>
+      </View>
       <FlatList
         removeClippedSubviews={false}
         refreshControl={
@@ -74,17 +127,3 @@ export const UndoneTodos = ({ renderScreen }) => {
     </View>
   );
 };
-
-let styles = StyleSheet.create({
-  todosWrapper: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  horizontal: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-});

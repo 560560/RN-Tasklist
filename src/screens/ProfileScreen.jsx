@@ -14,10 +14,39 @@ export const ProfileScreen = () => {
   const { mainColor, secondTextColor } = useSchemeColors();
   const name = useSelector((state) => state.authApp.name);
   const [showColorSettings, setShowColorSettings] = useState(false);
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      paddingTop: 60,
+    },
+    titleContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      borderBottomColor: '#d2d2d2',
+      borderStyle: 'solid',
+      borderBottomWidth: 1,
+      paddingBottom: 10,
+      marginBottom: 40,
+    },
+    title: {
+      fontSize: 19,
+      fontWeight: 'bold',
+      color: mainColor,
+    },
+    logoutContainer: {
+      paddingHorizontal: 30,
+      marginBottom: 20,
+    },
+  });
 
   return (
     <View style={styles.container}>
       <View>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>Мой профиль</Text>
+        </View>
         <View>
           <View
             style={{
@@ -58,17 +87,3 @@ export const ProfileScreen = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    paddingTop: 80,
-  },
-
-  logoutContainer: {
-    paddingHorizontal: 30,
-    marginBottom: 20,
-  },
-});

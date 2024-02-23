@@ -53,7 +53,8 @@ export const TodoSearch = () => {
       <TextInput
         style={styles.inputField}
         value={filterValue}
-        placeholder="Поиск по задачам..."
+        placeholder="Поиск по выполненным
+       задачам..."
         onChangeText={onChangeFilter}
       />
       <TouchableOpacity onPress={onClearFilter} disabled={!filterValue}>

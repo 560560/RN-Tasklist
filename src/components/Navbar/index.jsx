@@ -1,8 +1,9 @@
 import { FontAwesome } from '@expo/vector-icons';
 import { isEqual } from 'lodash';
 import React, { useCallback, useMemo } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import styled, { css } from 'styled-components';
 
 import { AppScreen } from '../../helpers/constants';
 import { hexToRgbA } from '../../helpers/hexToRgba';
@@ -20,32 +21,9 @@ export const Navbar = () => {
   const currentScreen = useSelector((state) => state.screens.screenToShow, isEqual);
   const undoneTodoUnderEdit = useSelector((state) => state.todos?.todoUnderEdit, isEqual);
 
-  const { mainColor, backgroundColor } = useSchemeColors();
+  const { mainColor } = useSchemeColors();
 
   const iconInactiveColor = useMemo(() => hexToRgbA(mainColor, 0.4), [mainColor]);
-
-  const styles = StyleSheet.create({
-    navTab: {
-      flex: 1,
-      flexDirection: 'row',
-      backgroundColor,
-      height: 50,
-      alignItems: 'center',
-      justifyContent: 'space-around',
-      position: 'absolute',
-      top: 65,
-      left: 0,
-      right: 0,
-      paddingBottom: 5,
-      borderBottomColor: '#d2d2d2',
-      borderStyle: 'solid',
-      borderBottomWidth: 1,
-    },
-    text: {
-      color: '#000',
-      fontSize: 18,
-    },
-  });
 
   const onPressProfileHandler = useCallback(() => {
     if (currentScreen !== AppScreen.PROFILE) {
@@ -78,7 +56,7 @@ export const Navbar = () => {
   }, [dispatch, currentScreen]);
 
   return (
-    <View style={styles.navTab}>
+    <NavbarStyled>
       <TouchableOpacity onPress={() => onPressTasksHandler()}>
         <FontAwesome
           name="square-o"
@@ -100,6 +78,21 @@ export const Navbar = () => {
           color={currentScreen === AppScreen.PROFILE ? mainColor : iconInactiveColor}
         />
       </TouchableOpacity>
-    </View>
+    </NavbarStyled>
   );
 };
+
+const NavbarStyled = styled.View`
+  flex: 1;
+  flex-direction: row;
+  height: 60px;
+  align-items: center;
+  justify-content: space-around;
+  position: absolute;
+  top: 65px;
+  left: 0;
+  right: 0;
+  ${({ $backgroundColor }) => css`
+    background-color: ${$backgroundColor};
+  `};
+`;

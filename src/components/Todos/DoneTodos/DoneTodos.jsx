@@ -2,12 +2,14 @@ import 'moment/locale/ru';
 
 import { isEqual } from 'lodash';
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { useSchemeColors } from '../../../helpers/useSchemeColors';
 import { getDoneTodos, increaseOffset } from '../../../redux/reducers';
+import { getSelectedDoneTodos } from '../../../redux/selectors/todosSelectors';
 import { addingDates, onRefresh } from '../helpers';
 import { TodoItem } from '../TodoItem';
-import { getSelectedDoneTodos } from '../../../redux/selectors/todosSelectors';
 
 export const DoneTodos = ({ renderScreen }) => {
   const dispatch = useDispatch();
@@ -18,7 +20,7 @@ export const DoneTodos = ({ renderScreen }) => {
 
   const isRefreshing = useSelector((state) => state.todos?.isRefreshing, isEqual) || false;
   const doneTodos = useSelector((state) => getSelectedDoneTodos(state), isEqual);
-
+  const { mainColor } = useSchemeColors();
   const sortedDoneTodosWithDates = useMemo(
     () => (doneTodos ? addingDates(doneTodos) : doneTodos),
     [doneTodos]
@@ -28,6 +30,44 @@ export const DoneTodos = ({ renderScreen }) => {
     dispatch(increaseOffset());
   }, [dispatch]);
 
+  const styles = StyleSheet.create({
+    emptyTodosWrapper: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    todosWrapper: {
+      flex: 1,
+    },
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+    },
+    horizontal: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+    },
+    emptyStateTitleContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      marginVertical: 10,
+    },
+    titleContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      borderBottomColor: '#d2d2d2',
+      borderStyle: 'solid',
+      borderBottomWidth: 1,
+      paddingBottom: 10,
+    },
+    title: {
+      fontSize: 19,
+      fontWeight: 'bold',
+      color: mainColor,
+    },
+  });
+
   if (!doneTodos) {
     return (
       <View style={[styles.container, styles.horizontal]}>
@@ -36,8 +76,21 @@ export const DoneTodos = ({ renderScreen }) => {
     );
   }
 
+  if (!sortedDoneTodosWithDates.length) {
+    return (
+      <View style={styles.emptyTodosWrapper}>
+        <View style={styles.emptyStateTitleContainer}>
+          <Text style={styles.title}>Нет выполненных задач</Text>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.todosWrapper}>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>Выполненные задачи</Text>
+      </View>
       <FlatList
         removeClippedSubviews={false}
         refreshControl={
@@ -66,17 +119,3 @@ export const DoneTodos = ({ renderScreen }) => {
     </View>
   );
 };
-
-let styles = StyleSheet.create({
-  todosWrapper: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  horizontal: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-});
